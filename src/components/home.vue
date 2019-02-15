@@ -9,7 +9,7 @@
           <h2>电商后台管理系统</h2>
         </el-col>
         <el-col :span="1">
-          <a class="logout" href="#">退出</a>
+          <a class="logout" href="#" @click="handleLoginout()">退出</a>
         </el-col>
       </el-row>
     </el-header>
@@ -101,16 +101,29 @@ export default {
   //   }
   // },
   // 写在beforeCreate也可以，一般写在beforeCreate，页面加载之前
-  beforeCreate () {
-    if (!localStorage.getItem('token')) {
+  beforeCreate() {
+    if (!localStorage.getItem("token")) {
       this.$router.push({
-        name: 'login'
-      })
-      this.$message.warning('请先登录！')
+        name: "login"
+      });
+      this.$message.warning("请先登录！");
     }
   },
-  mounted () {}
-}
+  mounted() {},
+  methods: {
+    // 退出功能
+    handleLoginout() {
+      // 1. 清除token
+      localStorage.clear();
+      // 2. 来到登录组件
+      this.$router.push({
+        name: "login"
+      });
+      // 3. 提示
+      this.$message.warning("退出成功");
+    }
+  }
+};
 </script>
 
 <style>
