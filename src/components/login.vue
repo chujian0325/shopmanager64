@@ -40,7 +40,11 @@ export default {
             }
           } = res
           if (status === 200) {
-            console.log('success')
+            // console.log('success')
+            // 登陆成功，渲染home组件，改标识，js改标识
+            this.$router.push({
+              name: 'home'
+            })
           } else {
             // 提示框
             // console.log('err')
