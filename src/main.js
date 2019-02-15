@@ -5,7 +5,7 @@ import App from './App'
 import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
-
+import '../src/assets/base.css'
 Vue.config.productionTip = false
 
 // 所有的Vue插件都是这样用
@@ -15,7 +15,9 @@ Vue.use(ElementUI)
 new Vue({
   el: '#app',
   router,
-  components: { App },
+  components: {
+    App
+  },
   template: '<App/>'
   // 同render的作用一样，把根组件的内容，和el所管理的视图内容替换
   // 完整写法如下：
