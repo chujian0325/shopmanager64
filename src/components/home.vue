@@ -137,7 +137,7 @@ export default {
   background-color: yellow;
 }
 .main {
-  background-color: green;
+  /* background-color: green; */
 }
 .middle {
   text-align: center;
