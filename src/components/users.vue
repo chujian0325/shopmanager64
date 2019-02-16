@@ -77,7 +77,14 @@
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <!-- 一个布尔类型的值，如果不写属性值，默认是true -->
-          <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+          <el-button
+            @click="showDiaEditUser(scope.row)"
+            size="mini"
+            plain
+            type="primary"
+            icon="el-icon-edit"
+            circle
+          ></el-button>
           <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
           <!-- scope是绑定的外层数据，可以传scope.row ，把数组中的对象传过去 ，把当前的用户传过去user -->
           <el-button
@@ -134,6 +141,25 @@
         <el-button type="primary" @click="addUser()">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 对话框--编辑用户 -->
+    <el-dialog title="编辑用户" :visible.sync="dialogFormVisibleEdit">
+      <!-- 登录写过表单，可以在文档中找表单  -->
+      <el-form label-position="left" label-width="80px" :model="formdata">
+        <el-form-item label="用户名">
+          <el-input disabled v-model="formdata.username"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱">
+          <el-input v-model="formdata.email"></el-input>
+        </el-form-item>
+        <el-form-item label="电话">
+          <el-input v-model="formdata.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
+        <el-button type="primary" @click="editUser()">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -150,6 +176,7 @@ export default {
       list: [],
       // 对话框的数据
       dialogFormVisibleAdd: false,
+      dialogFormVisibleEdit: false,
       // 表单数据，将来要发post请求，需要请求体，请求体的数据根据接口文档写
       // username	用户名称	不能为空
       // password	用户密码	不能为空
@@ -168,6 +195,14 @@ export default {
     this.getTableData();
   },
   methods: {
+    // 编辑--发送请求
+    editUser() {},
+    // 编辑--显示对话框
+    showDiaEditUser(user) {
+      // 获取当前用户的数据
+      this.formdata = user;
+      this.dialogFormVisibleEdit = true;
+    },
     // 删除--显示确认框
     showMsgBoxDele(user) {
       console.log(user);
