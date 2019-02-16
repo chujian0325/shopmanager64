@@ -100,7 +100,7 @@
       :page-sizes="[2,4,6,8]"
       :page-size="2"
       layout="total, sizes, prev, pager, next, jumper"
-      :total="5"
+      :total="total"
     ></el-pagination>
     <!-- 对话框--添加用户  因为对话框是单独的弹出一层，所以代码位置写在哪里都可以
     dialogFormVisibleAdd 因为有好多对话框，这里加个Add，所有使用dialogFormVisible的位置都加Add
@@ -123,7 +123,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisibleAdd = false">确 定</el-button>
+        <el-button type="primary" @click="addUser()">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -160,8 +160,32 @@ export default {
     this.getTableData();
   },
   methods: {
+    // 添加用户--发送请求
+   async addUser() {
+      const res = await this.$http.post("users", this.formdata);
+      console.log(res);
+      const {
+        data,
+        meta: { msg, status }
+      } = res.data;
+      if (status === 201) {
+        // 关闭对话框
+        this.dialogFormVisibleAdd = false;
+        // 重新加载表格
+        this.getTableData();
+        // 清空表单，在显示对话框的时候清空
+      }
+    },
     // 添加用户-显示对话框
     showDiaAddUsers() {
+      // 清空表单
+      // this.formdata.username = "";
+      // this.formdata.password = "";
+      // this.formdata.email = "";
+      // this.formdata.mobile = "";
+      // 或者  formdata设置成一个空对象，但是绑定表单的时候，可以通过点的方式给对象添加成员
+      this.formdata = {};
+      // 显示对话框
       this.dialogFormVisibleAdd = true;
     },
     // 清空时获取所有用户
