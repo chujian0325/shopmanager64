@@ -77,16 +77,17 @@
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <!-- 一个布尔类型的值，如果不写属性值，默认是true -->
+          <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+          <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
+          <!-- scope是绑定的外层数据，可以传scope.row ，把数组中的对象传过去 ，把当前的用户传过去user -->
           <el-button
-            @click="showMsgBoxDele()"
+            @click="showMsgBoxDele(scope.row)"
             size="mini"
             plain
-            type="primary"
-            icon="el-icon-edit"
+            type="danger"
+            icon="el-icon-delete"
             circle
           ></el-button>
-          <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
-          <el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -168,14 +169,28 @@ export default {
   },
   methods: {
     // 删除--显示确认框
-    showMsgBoxDele() {
+    showMsgBoxDele(user) {
+      console.log(user);
+
       this.$confirm("确定删除吗？", "提示", {
         confirmButtonText: "确定",
         cancelButtonText: "取消",
         type: "warning"
       })
-        .then(() => {
-          this.$message.success("删除成功!");
+        .then(async () => {
+          // id是用户id ，想拿id,要先拿到用户，在方法中拿数据，数据的来源：
+          // 1. data中提供，看看有没有
+          // 2. 方法中传递参数，看看方法调用的时候能不能传 递参数
+          const res = await this.$http.delete(`users/${user.id}`);
+          // console.log(res);
+          const {
+            meta: { msg, status }
+          } = res.data;
+          if (status === 200) {
+            this.$message.success(msg);
+            // 重新加载表格
+            this.getTableData();
+          }
         })
         .catch(() => {
           this.$message.warning("取消删除!");
