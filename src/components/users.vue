@@ -196,7 +196,28 @@ export default {
   },
   methods: {
     // 编辑--发送请求
-    editUser() {},
+    async editUser() {
+      // 发送编辑请求
+      // id ->user.id
+      // 1. data 中没有user
+      // 2. 方法调用的时候也不能传参数，因为scope只能在template中写，编辑按钮外层没有template包裹，可以考虑在data中写user
+      // 上一步，打开对话框时，已经把user所有的数据赋值给了formdata,如果能来到这一步,说明对话框是打开的,可以直接使用formdata中的id
+      // put请求和post请求一样，需要传请求体
+      const res = await this.$http.put(
+        `users/${this.formdata.id}`,
+        this.formdata
+      );
+      console.log(res);
+      const {
+        meta: { msg, status }
+      } = res.data;
+      if (status === 200) {
+        // 关闭对话框
+        this.dialogFormVisibleEdit = false;
+        // 重新加载表格
+        this.getTableData();
+      }
+    },
     // 编辑--显示对话框
     showDiaEditUser(user) {
       // 获取当前用户的数据
@@ -222,6 +243,8 @@ export default {
             meta: { msg, status }
           } = res.data;
           if (status === 200) {
+            // 把页码重置为第一页
+            this.pagenum = 1;
             this.$message.success(msg);
             // 重新加载表格
             this.getTableData();
