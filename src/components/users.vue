@@ -77,7 +77,14 @@
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <!-- 一个布尔类型的值，如果不写属性值，默认是true -->
-          <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+          <el-button
+            @click="showMsgBoxDele()"
+            size="mini"
+            plain
+            type="primary"
+            icon="el-icon-edit"
+            circle
+          ></el-button>
           <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
           <el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
         </template>
@@ -160,8 +167,22 @@ export default {
     this.getTableData();
   },
   methods: {
+    // 删除--显示确认框
+    showMsgBoxDele() {
+      this.$confirm("确定删除吗？", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+        type: "warning"
+      })
+        .then(() => {
+          this.$message.success("删除成功!");
+        })
+        .catch(() => {
+          this.$message.warning("取消删除!");
+        });
+    },
     // 添加用户--发送请求
-   async addUser() {
+    async addUser() {
       const res = await this.$http.post("users", this.formdata);
       console.log(res);
       const {
