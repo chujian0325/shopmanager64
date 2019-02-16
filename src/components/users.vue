@@ -17,7 +17,7 @@
       </el-col>
     </el-row>
     <!-- 表格 -->
-    <el-table :data="list" style="width: 100%">
+    <el-table height="350px" :data="list" style="width: 100%">
       <!-- 
         id: 500
         username: "admin"
@@ -70,14 +70,32 @@
 
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
-           <!-- 一个布尔类型的值，如果不写属性值，默认是true -->
+          <!-- 一个布尔类型的值，如果不写属性值，默认是true -->
           <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
           <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
           <el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
         </template>
       </el-table-column>
     </el-table>
-    <!-- 分页 -->
+    <!-- 分页 
+     @size-change 每页条数改变时触发 
+     @current-change 页码改变时触发
+     current-page 当前显示第几页
+     page-sizes 每页条数的不同情况的数组
+     page-size 每页几条
+     layout 附加功能
+     total 总条数
+    -->
+    <el-pagination
+      class="page"
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="pagenum"
+      :page-sizes="[2,4,6,8]"
+      :page-size="2"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="5"
+    ></el-pagination>
   </el-card>
 </template>
 
@@ -87,7 +105,9 @@ export default {
     return {
       query: "",
       pagenum: 1,
-      pagesize: 10,
+      pagesize: 2,
+      // 为了区分是后台返回的数据还是自己写的初始值，total设置为-1
+      total: -1,
       // 表格数据
       list: []
     };
@@ -97,6 +117,23 @@ export default {
     this.getTableData();
   },
   methods: {
+    // 分页相关的方法
+    handleSizeChange(val) {
+      console.log(`每页 ${val} 条`);
+      // 按照新的pagesize发送请求
+      // 当每页条数发生改变时，充值pagenum=1，从第一页开始展示数据
+      this.pagenum=1;
+      this.pagesize=val;
+      this.getTableData();
+
+    },
+    // 当前第2页，当点击3时，触发下面的方法，val=3
+    handleCurrentChange(val) {
+      console.log(`当前页: ${val}`);
+      // 按照新页码发送请求
+      this.pagenum = val;
+      this.getTableData();
+    },
     //   获取表格数据
     async getTableData() {
       // 除了登录请求，其他所有请求都需要授权
@@ -112,14 +149,17 @@ export default {
           this.pagesize
         }`
       );
-      //   console.log(res);
+      // console.log(res);
       const {
         data,
         meta: { msg, status }
       } = res.data;
       if (status === 200) {
+        // res中有total总条数
+        this.total = data.total;
+
         this.list = data.users;
-        console.log(data.users);
+        // console.log(this.list);
       }
     }
   }
@@ -135,5 +175,8 @@ export default {
 }
 .searchInput {
   width: 350px;
+}
+.page {
+  margin-top: 20px;
 }
 </style>
