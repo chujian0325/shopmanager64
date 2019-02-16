@@ -62,16 +62,12 @@
         2. 给template设置属性slot-scope
         3. 设置数据
       -->
-      <el-table-column  label="用户状态" width="140">
+      <el-table-column label="用户状态" width="140">
         <template slot-scope="scope">
           <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
         </template>
       </el-table-column>
-    </el-table>
-  </el-card>
-</template>
- 
-      </el-table-column>
+
       <el-table-column prop="name" label="操作" width="200"></el-table-column>
     </el-table>
     <!-- 分页 -->
