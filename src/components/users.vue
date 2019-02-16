@@ -24,7 +24,7 @@
     </el-row>
     <!-- 表格 -->
     <el-table height="350px" :data="list" style="width: 100%">
-      <!-- 
+      <!--
         id: 500
         username: "admin"
         email: "adsfad@qq.com"
@@ -83,8 +83,8 @@
         </template>
       </el-table-column>
     </el-table>
-    <!-- 分页 
-     @size-change 每页条数改变时触发 
+    <!-- 分页
+     @size-change 每页条数改变时触发
      @current-change 页码改变时触发
      current-page 当前显示第几页
      page-sizes 每页条数的不同情况的数组
@@ -131,9 +131,9 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
-      query: "",
+      query: '',
       pagenum: 1,
       pagesize: 2,
       // 为了区分是后台返回的数据还是自己写的初始值，total设置为-1
@@ -148,81 +148,81 @@ export default {
       // email	邮箱	可以为空
       // mobile	手机号	可以为空
       formdata: {
-        username: "",
-        password: "",
-        email: "",
-        mobile: ""
+        username: '',
+        password: '',
+        email: '',
+        mobile: ''
       }
-    };
+    }
   },
   //   所有的获取首屏数据的方法调用在created中
-  created() {
-    this.getTableData();
+  created () {
+    this.getTableData()
   },
   methods: {
     // 添加用户-显示对话框
-    showDiaAddUsers() {
-      this.dialogFormVisibleAdd = true;
+    showDiaAddUsers () {
+      this.dialogFormVisibleAdd = true
     },
     // 清空时获取所有用户
-    getAllUsers() {
-      this.getTableData();
+    getAllUsers () {
+      this.getTableData()
     },
     // 搜索用户功能
-    searchUser() {
+    searchUser () {
       // 搜索结果从第一页开始展示
-      this.pagenum = 1;
+      this.pagenum = 1
       // 获取数据的方法能根据关键字查询数据，搜索框用v-model绑定了query,
       // 按照query关键字搜索
       // query的初始值是空""，会展示全部的用户列表
-      this.getTableData();
+      this.getTableData()
     },
     // 分页相关的方法
-    handleSizeChange(val) {
-      console.log(`每页 ${val} 条`);
+    handleSizeChange (val) {
+      console.log(`每页 ${val} 条`)
       // 按照新的pagesize发送请求
       // 当每页条数发生改变时，充值pagenum=1，从第一页开始展示数据
-      this.pagenum = 1;
-      this.pagesize = val;
-      this.getTableData();
+      this.pagenum = 1
+      this.pagesize = val
+      this.getTableData()
     },
     // 当前第2页，当点击3时，触发下面的方法，val=3
-    handleCurrentChange(val) {
-      console.log(`当前页: ${val}`);
+    handleCurrentChange (val) {
+      console.log(`当前页: ${val}`)
       // 按照新页码发送请求
-      this.pagenum = val;
-      this.getTableData();
+      this.pagenum = val
+      this.getTableData()
     },
     //   获取表格数据
-    async getTableData() {
+    async getTableData () {
       // 除了登录请求，其他所有请求都需要授权
       // 需要授权的 API ，必须在请求头中使用 Authorization 字段提供 token 令牌
       // 在发送请求之前，先设置请求头{Authorization:token值}
       // {ContentType:text/html,Authorization:?}
       // 设置请求头,让axios去做,用的是axios发送请求,查axios文档,搜索headers,能不能设置请求头
       // 获取token
-      const AUTH_TOKEN = localStorage.getItem("token");
-      this.$http.defaults.headers.common["Authorization"] = AUTH_TOKEN;
+      const AUTH_TOKEN = localStorage.getItem('token')
+      this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
       const res = await this.$http.get(
         `users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${
           this.pagesize
         }`
-      );
+      )
       // console.log(res);
       const {
         data,
         meta: { msg, status }
-      } = res.data;
+      } = res.data
       if (status === 200) {
         // res中有total总条数
-        this.total = data.total;
+        this.total = data.total
 
-        this.list = data.users;
+        this.list = data.users
         // console.log(this.list);
       }
     }
   }
-};
+}
 </script>
 
 <style>
