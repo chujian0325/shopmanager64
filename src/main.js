@@ -6,6 +6,7 @@ import router from './router'
 import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '../src/assets/base.css'
+import moment from 'moment'
 
 import axios from 'axios'
 axios.defaults.baseURL = 'http://localhost:8888/api/private/v1/'
@@ -15,6 +16,11 @@ Vue.config.productionTip = false
 
 // 所有的Vue插件都是这样用
 Vue.use(ElementUI)
+
+// 全局过滤器，处理日期格式
+Vue.filter('fmtdate', (v) => {
+  return moment(v).format('YYYY-MM-DD')
+})
 
 /* eslint-disable no-new */
 new Vue({
