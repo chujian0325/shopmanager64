@@ -68,7 +68,14 @@
         </template>
       </el-table-column>
 
-      <el-table-column prop="name" label="操作" width="200"></el-table-column>
+      <el-table-column label="操作" width="200">
+        <template slot-scope="scope">
+           <!-- 一个布尔类型的值，如果不写属性值，默认是true -->
+          <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+          <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
+          <el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
+        </template>
+      </el-table-column>
     </el-table>
     <!-- 分页 -->
   </el-card>
