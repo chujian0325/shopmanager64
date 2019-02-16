@@ -9,11 +9,17 @@
     <!-- 搜索+添加 -->
     <el-row class="serachBox">
       <el-col>
-        <el-input class="searchInput" placeholder="请输入内容" v-model="query">
-          <el-button slot="append" icon="el-icon-search"></el-button>
+        <el-input
+          @clear="getAllUsers()"
+          clearable
+          class="searchInput"
+          placeholder="请输入内容"
+          v-model="query"
+        >
+          <el-button @click="searchUser()" slot="append" icon="el-icon-search"></el-button>
         </el-input>
         <!-- 添加按钮 -->
-        <el-button type="success">添加用户</el-button>
+        <el-button @click="showDiaAddUsers()" type="success">添加用户</el-button>
       </el-col>
     </el-row>
     <!-- 表格 -->
@@ -96,6 +102,30 @@
       layout="total, sizes, prev, pager, next, jumper"
       :total="5"
     ></el-pagination>
+    <!-- 对话框--添加用户  因为对话框是单独的弹出一层，所以代码位置写在哪里都可以
+    dialogFormVisibleAdd 因为有好多对话框，这里加个Add，所有使用dialogFormVisible的位置都加Add
+    -->
+    <el-dialog title="添加用户" :visible.sync="dialogFormVisibleAdd">
+      <!-- 登录写过表单，可以在文档中找表单  -->
+      <el-form label-position="left" label-width="80px" :model="formdata">
+        <el-form-item label="用户名">
+          <el-input v-model="formdata.username"></el-input>
+        </el-form-item>
+        <el-form-item label="密码">
+          <el-input v-model="formdata.password"></el-input>
+        </el-form-item>
+        <el-form-item label="邮箱">
+          <el-input v-model="formdata.email"></el-input>
+        </el-form-item>
+        <el-form-item label="电话">
+          <el-input v-model="formdata.mobile"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisibleAdd = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -109,7 +139,20 @@ export default {
       // 为了区分是后台返回的数据还是自己写的初始值，total设置为-1
       total: -1,
       // 表格数据
-      list: []
+      list: [],
+      // 对话框的数据
+      dialogFormVisibleAdd: false,
+      // 表单数据，将来要发post请求，需要请求体，请求体的数据根据接口文档写
+      // username	用户名称	不能为空
+      // password	用户密码	不能为空
+      // email	邮箱	可以为空
+      // mobile	手机号	可以为空
+      formdata: {
+        username: "",
+        password: "",
+        email: "",
+        mobile: ""
+      }
     };
   },
   //   所有的获取首屏数据的方法调用在created中
@@ -117,15 +160,31 @@ export default {
     this.getTableData();
   },
   methods: {
+    // 添加用户-显示对话框
+    showDiaAddUsers() {
+      this.dialogFormVisibleAdd = true;
+    },
+    // 清空时获取所有用户
+    getAllUsers() {
+      this.getTableData();
+    },
+    // 搜索用户功能
+    searchUser() {
+      // 搜索结果从第一页开始展示
+      this.pagenum = 1;
+      // 获取数据的方法能根据关键字查询数据，搜索框用v-model绑定了query,
+      // 按照query关键字搜索
+      // query的初始值是空""，会展示全部的用户列表
+      this.getTableData();
+    },
     // 分页相关的方法
     handleSizeChange(val) {
       console.log(`每页 ${val} 条`);
       // 按照新的pagesize发送请求
       // 当每页条数发生改变时，充值pagenum=1，从第一页开始展示数据
-      this.pagenum=1;
-      this.pagesize=val;
+      this.pagenum = 1;
+      this.pagesize = val;
       this.getTableData();
-
     },
     // 当前第2页，当点击3时，触发下面的方法，val=3
     handleCurrentChange(val) {
