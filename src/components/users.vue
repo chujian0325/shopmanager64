@@ -196,7 +196,7 @@
           
           -->
           {{selectVal}}
-          <el-select  v-model="selectVal" placeholder="请选择角色名">
+          <el-select v-model="selectVal" placeholder="请选择角色名">
             <el-option disabled label="请选择" :value="-1"></el-option>
             <!-- 第一类是写死的 请选择 -->
             <!-- 第二类数据是将来获取角色名称数据 用v-for遍历-->
@@ -216,7 +216,7 @@
       </el-form>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisibleRole = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisibleRole = false">确 定</el-button>
+        <el-button type="primary" @click="setRole()">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -251,6 +251,7 @@ export default {
       },
       // 下拉框中的数据
       selectVal: -1,
+      currUserId: -1,
       // 角色数组
       roles: []
     };
@@ -260,12 +261,31 @@ export default {
     this.getTableData();
   },
   methods: {
+    // 分配角色--发送请求，分配用户角色
+    async setRole() {
+      // :id是用户id，data中没有数据，也不能传递参数，在对话框里面，没有template，不能传实参，可以在data中提供一个id
+      // currUserId -> -1
+      // 显示对话框的时候，有用户，可以在 showDiaSetRole()方法中给currUserId赋值
+      const res = await this.$http.put(`users/${this.currUserId}/role`, {
+        rid: this.selectVal
+      });
+      // console.log(res);
+      const {
+        meta: { msg, status }
+      } = res.data;
+      if (status === 200) {
+        // 关闭对话框
+        this.dialogFormVisibleRole=false;
+        this.getTableData()
+      }
+    },
     // 分配角色--打开对话框
     async showDiaSetRole(user) {
       // console.log(user);
 
       // 显示用户名
       this.formdata.username = user.username;
+      this.currUserId = user.id;
       this.dialogFormVisibleRole = true;
       // 获取角色名称
       const res = await this.$http.get(`roles`);
@@ -281,7 +301,7 @@ export default {
       // 打印user ，发现没有
       // 查看文档 根据 ID 查询用户信息，可以看到有角色id
       const res2 = await this.$http.get(`users/${user.id}`);
-      console.log(res2); //返回的数据中有角色id ->rid
+      // console.log(res2); //返回的数据中有角色id ->rid
 
       this.selectVal = res2.data.data.rid;
     },
