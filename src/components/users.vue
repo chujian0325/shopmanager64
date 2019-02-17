@@ -196,14 +196,14 @@
           
           -->
           {{selectVal}}
-          <el-select v-model="selectVal" placeholder="请选择角色名">
-            <el-option label="请选择" :value="1"></el-option>
+          <el-select  v-model="selectVal" placeholder="请选择角色名">
+            <el-option disabled label="请选择" :value="-1"></el-option>
             <!-- 第一类是写死的 请选择 -->
             <!-- 第二类数据是将来获取角色名称数据 用v-for遍历-->
             <!-- 5个角色都有自己的value
             value就是角色id
             [30,31,34,39,40]
-            
+
             -->
             <el-option
               v-for="(item,i) in roles"
@@ -250,7 +250,7 @@ export default {
         mobile: ""
       },
       // 下拉框中的数据
-      selectVal: 1,
+      selectVal: -1,
       // 角色数组
       roles: []
     };
