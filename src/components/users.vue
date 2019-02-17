@@ -441,8 +441,8 @@ export default {
       // {ContentType:text/html,Authorization:?}
       // 设置请求头,让axios去做,用的是axios发送请求,查axios文档,搜索headers,能不能设置请求头
       // 获取token
-      const AUTH_TOKEN = localStorage.getItem('token')
-      this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
+      // const AUTH_TOKEN = localStorage.getItem('token')
+      // this.$http.defaults.headers.common['Authorization'] = AUTH_TOKEN
       const res = await this.$http.get(
         `users?query=${this.query}&pagenum=${this.pagenum}&pagesize=${
           this.pagesize

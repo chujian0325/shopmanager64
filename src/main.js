@@ -8,9 +8,8 @@ import 'element-ui/lib/theme-chalk/index.css'
 import '../src/assets/base.css'
 import moment from 'moment'
 import CusBread from './components/cusBread.vue'
-import axios from 'axios'
-axios.defaults.baseURL = 'http://localhost:8888/api/private/v1/'
-Vue.prototype.$http = axios
+import HttpServer from './http.js'
+
 
 Vue.config.productionTip = false
 
@@ -25,6 +24,8 @@ Vue.component(CusBread.name,CusBread)
 
 
 // 所有的Vue插件都是这样用
+// 希望这样使用axios，就是把axios变成Vue的插件
+Vue.use(HttpServer)
 Vue.use(ElementUI)
 
 // 全局过滤器，处理日期格式
