@@ -1,11 +1,7 @@
 <template>
   <el-card class="box">
     <!-- 面包屑  -->
-    <el-breadcrumb separator="/">
-      <el-breadcrumb-item :to="{ path: '/' }">首页</el-breadcrumb-item>
-      <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-      <el-breadcrumb-item>用户列表</el-breadcrumb-item>
-    </el-breadcrumb>
+   <cus-bread level1="用户管理" level2="用户列表"></cus-bread>
     <!-- 搜索+添加 -->
     <el-row class="serachBox">
       <el-col>

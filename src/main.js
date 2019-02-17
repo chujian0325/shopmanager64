@@ -7,12 +7,22 @@ import ElementUI from 'element-ui'
 import 'element-ui/lib/theme-chalk/index.css'
 import '../src/assets/base.css'
 import moment from 'moment'
-
+import CusBread from './components/cusBread.vue'
 import axios from 'axios'
 axios.defaults.baseURL = 'http://localhost:8888/api/private/v1/'
 Vue.prototype.$http = axios
 
 Vue.config.productionTip = false
+
+// 组件->两类+三步，定义一个全局组件
+// 全局自定义面包屑组件
+// 参数1：组件名称
+// 参数2：组件选项所在对象(因为导出的是组件选项所在对象，所以导入的也是组件选项所在对象，可以直接写CurBread)
+// Vue.component('CusBread',CurBread)
+// 导出的也是对象，name通过点的方式获得
+Vue.component(CusBread.name,CusBread)
+
+
 
 // 所有的Vue插件都是这样用
 Vue.use(ElementUI)
