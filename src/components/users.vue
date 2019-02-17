@@ -70,7 +70,13 @@
       -->
       <el-table-column label="用户状态" width="140">
         <template slot-scope="scope">
-          <el-switch v-model="scope.row.mg_state" active-color="#13ce66" inactive-color="#ff4949"></el-switch>
+          <!-- 外层有template，绑定了scope，可以传实参 -->
+          <el-switch
+            @change="changeState(scope.row)"
+            v-model="scope.row.mg_state"
+            active-color="#13ce66"
+            inactive-color="#ff4949"
+          ></el-switch>
         </template>
       </el-table-column>
 
@@ -195,6 +201,23 @@ export default {
     this.getTableData();
   },
   methods: {
+    // 修改状态
+    async changeState(user) {
+      // 改状态，就要改数据，改数据就要发请求。
+      // 接口文档中写了参数写在url中，所以不用写请求体
+      // 根据接口文档可知：
+      // uId是用户的id
+      // type是用户状态
+      // 根据这个写url中的数据
+      // 打印下user，看看有没有用户的id 和 状态
+      // console.log(user);
+
+      const res = await this.$http.put(
+        `users/${user.id}/state/${user.mg_state}`
+      );
+      console.log(res);
+      
+    },
     // 编辑--发送请求
     async editUser() {
       // 发送编辑请求
