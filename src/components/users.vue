@@ -91,7 +91,14 @@
             icon="el-icon-edit"
             circle
           ></el-button>
-          <el-button size="mini" plain type="success" icon="el-icon-check" circle></el-button>
+          <el-button
+            @click="showDiaSetRole(scope.row)"
+            size="mini"
+            plain
+            type="success"
+            icon="el-icon-check"
+            circle
+          ></el-button>
           <!-- scope是绑定的外层数据，可以传scope.row ，把数组中的对象传过去 ，把当前的用户传过去user -->
           <el-button
             @click="showMsgBoxDele(scope.row)"
@@ -166,6 +173,52 @@
         <el-button type="primary" @click="editUser()">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 对话框---分配角色 -->
+    <el-dialog
+      title="分配角色"
+      label-position="left"
+      label-width="80px"
+      :visible.sync="dialogFormVisibleRole"
+    >
+      <el-form :model="formdata">
+        <el-form-item label="用户名">{{formdata.username}}</el-form-item>
+        <el-form-item label="角色">
+          <!-- 
+            下拉框的特性
+            v-model 绑定表单元素
+            1. type="text"  一般的input
+            2. 其他表单 textarea select+option
+            下拉框的特点：
+            1. 默认显示请选择->当v-model的数据selectVal与option中 的value值，相等
+            2. 当选择某个option时，v-model数据的值等于选中的label的value的值
+            3. 
+
+          
+          -->
+          {{selectVal}}
+          <el-select v-model="selectVal" placeholder="请选择角色名">
+            <el-option label="请选择" :value="1"></el-option>
+            <!-- 第一类是写死的 请选择 -->
+            <!-- 第二类数据是将来获取角色名称数据 用v-for遍历-->
+            <!-- 5个角色都有自己的value
+            value就是角色id
+            [30,31,34,39,40]
+            
+            -->
+            <el-option
+              v-for="(item,i) in roles"
+              :key="item.id"
+              :label="item.roleName"
+              :value="item.id"
+            ></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleRole = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisibleRole = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -183,6 +236,8 @@ export default {
       // 对话框的数据
       dialogFormVisibleAdd: false,
       dialogFormVisibleEdit: false,
+      dialogFormVisibleRole: false,
+
       // 表单数据，将来要发post请求，需要请求体，请求体的数据根据接口文档写
       // username	用户名称	不能为空
       // password	用户密码	不能为空
@@ -193,7 +248,11 @@ export default {
         password: "",
         email: "",
         mobile: ""
-      }
+      },
+      // 下拉框中的数据
+      selectVal: 1,
+      // 角色数组
+      roles: []
     };
   },
   //   所有的获取首屏数据的方法调用在created中
@@ -201,6 +260,31 @@ export default {
     this.getTableData();
   },
   methods: {
+    // 分配角色--打开对话框
+    async showDiaSetRole(user) {
+      // console.log(user);
+
+      // 显示用户名
+      this.formdata.username = user.username;
+      this.dialogFormVisibleRole = true;
+      // 获取角色名称
+      const res = await this.$http.get(`roles`);
+      // console.log(res);
+      const {
+        data,
+        meta: { msg, status }
+      } = res.data;
+      // 拿到数组，在data中声明roles，用v-for遍历
+      this.roles = data;
+      // 给下拉框v-model绑定的数据值selectVal赋值
+      // this.selectVal=当前用户的角色id，看返回的user中是否有角色id
+      // 打印user ，发现没有
+      // 查看文档 根据 ID 查询用户信息，可以看到有角色id
+      const res2 = await this.$http.get(`users/${user.id}`);
+      console.log(res2); //返回的数据中有角色id ->rid
+
+      this.selectVal = res2.data.data.rid;
+    },
     // 修改状态
     async changeState(user) {
       // 改状态，就要改数据，改数据就要发请求。
@@ -216,7 +300,6 @@ export default {
         `users/${user.id}/state/${user.mg_state}`
       );
       console.log(res);
-      
     },
     // 编辑--发送请求
     async editUser() {
