@@ -22,8 +22,8 @@ export default {
   methods: {
     // 获取权限列表数据
     async getTableData() {
-     
       const res = await this.$http.get(`rights/list`);
+    //   console.log("请求发起了--");
       console.log(res);
       const {
         data,
