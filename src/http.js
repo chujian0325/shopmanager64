@@ -24,11 +24,11 @@ HttpServer.install = function (Vue) {
     // console.log(config);
     // url是请求的全路径，因为设置了baseUrl，所以在代码中写url时，会自动取出后面的相对路径
     if (config.url !== 'login') {
-      const AUTH_TOKEN = localStorage.getItem("token");
+      const AUTH_TOKEN = localStorage.getItem('token');
       // 用axios设置头部
       // axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
       // config中有headers，设置头部
-      config.headers.common["Authorization"] = AUTH_TOKEN;
+      config.headers.common['Authorization'] = AUTH_TOKEN;
     }
 
     return config;
