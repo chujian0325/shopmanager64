@@ -21,7 +21,7 @@ HttpServer.install = function (Vue) {
     // 在发送请求之前做些什么
     // console.log('请求拦截器被触发了');
 
-    console.log(config);
+    // console.log(config);
     // url是请求的全路径，因为设置了baseUrl，所以在代码中写url时，会自动取出后面的相对路径
     if (config.url !== 'login') {
       const AUTH_TOKEN = localStorage.getItem("token");
