@@ -275,8 +275,8 @@ export default {
       } = res.data;
       if (status === 200) {
         // 关闭对话框
-        this.dialogFormVisibleRole=false;
-        this.getTableData()
+        this.dialogFormVisibleRole = false;
+        this.getTableData();
       }
     },
     // 分配角色--打开对话框
@@ -345,9 +345,22 @@ export default {
       }
     },
     // 编辑--显示对话框
-    showDiaEditUser(user) {
+    async showDiaEditUser(user) {
       // 获取当前用户的数据
-      this.formdata = user;
+      // this.formdata = user;
+      // 上行代码，两个指针指向了同一个内存空间，当操作formdata的数据时，user的数据也会改变
+      // 可以这样写，下面这种写法不是指向同一个内存空间，而是给formdata加一个属性
+      // this.formdata.username = user.username;
+      // this.formdata.email = user.email;
+      // this.formdata.mobile = user.mobile;
+      // 或者
+      // 该请求是传一个用户id，返回用户信息
+      const res = await this.$http.get(`users/${user.id}`);
+      console.log(res);
+      // 返回的结果中有我们需要的用户信息（邮箱、电话、用户名）
+      // 上面的赋值是用的已经存在的用户数据，下面的赋值和当前用户无关，是请求的数据
+      this.formdata = res.data.data;
+
       this.dialogFormVisibleEdit = true;
     },
     // 删除--显示确认框
