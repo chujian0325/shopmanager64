@@ -12,27 +12,37 @@
           -->
           <el-row class="level1" v-for="(item1,i) in scope.row.children" :key="item1.id">
             <el-col :span="4">
-              <el-tag closable>{{item1.authName}}</el-tag>
+              <el-tag @close="deleteRights(scope.row,item1)" closable>{{item1.authName}}</el-tag>
               <i class="el-icon-arrow-right"></i>
             </el-col>
             <el-col :span="20">
               <el-row class="level2" v-for="(item2) in item1.children" :key="item2.id">
                 <el-col :span="4">
-                  <el-tag closable type="success">{{item2.authName}}</el-tag>
+                  <el-tag
+                    @close="deleteRights(scope.row,item2)"
+                    closable
+                    type="success"
+                  >{{item2.authName}}</el-tag>
                   <i class="el-icon-arrow-right"></i>
                 </el-col>
                 <!-- 三级整体是一列，所以v-for不能写在el-col，而是写在el-tag -->
                 <el-col :span="20">
-                  <el-tag closable type="warning" v-for="(item3) in item2.children" :key="item3.id">{{item3.authName}}</el-tag>
+                  <el-tag
+                    @close="deleteRights(scope.row,item3)"
+                    closable
+                    type="warning"
+                    v-for="(item3) in item2.children"
+                    :key="item3.id"
+                  >{{item3.authName}}</el-tag>
                 </el-col>
               </el-row>
             </el-col>
           </el-row>
           <!-- 如果数组长度为0，显示未分配权限 -->
           <el-row v-if="scope.row.children.length===0">
-              <el-col>
-                  <span>未分配权限</span>
-              </el-col>
+            <el-col>
+              <span>未分配权限</span>
+            </el-col>
           </el-row>
         </template>
       </el-table-column>
@@ -69,6 +79,32 @@ export default {
     this.getRoles();
   },
   methods: {
+    //  角色列表--删除权限
+    async deleteRights(role, rights) {
+      // 发送请求
+      // roleId ->角色id
+      // rightId ->权限id
+      //   console.log(role);
+      //   console.log(rights);
+
+      const res = await this.$http.delete(
+        `roles/${role.id}/rights/${rights.id}`
+      );
+      console.log(res);
+      const {
+        data,
+        meta: { msg, status }
+      } = res.data;
+      if (status === 200) {
+        // 提示成功
+        this.$message.success(msg);
+        // 更新表格
+        // this.getRoles()
+        // 会返回当前角色的剩余权限
+        // 只更新当前的角色权限，方法中有当前角色，
+        role.children = data;
+      }
+    },
     // 角色列表--设置角色
     showDiaSetRights() {},
     // 获取权限列表
@@ -81,7 +117,7 @@ export default {
       } = res.data;
       if (status === 200) {
         this.roles = data;
-        console.log(this.roles);
+        // console.log(this.roles);
       }
     }
   }
