@@ -60,12 +60,13 @@ export default {
   // },
   // 写在beforeCreate也可以，一般写在beforeCreate，页面加载之前
   beforeCreate() {
-    if (!localStorage.getItem("token")) {
-      this.$router.push({
-        name: "login"
-      });
-      this.$message.warning("请先登录！");
-    }
+    // 判断token有没有这件事不想放在home主页中，想放在另外的位置，当标识发生变化时，代码的位置不是先来到组件，代码是先来到路由的位置index.js，看路由中有没有/，如果有/，才去执行home.vue（如果 路由匹配成功，才去渲染组件）所以在路由位置加一个筛选
+    // if (!localStorage.getItem("token")) {
+    //   this.$router.push({
+    //     name: "login"
+    //   });
+    //   this.$message.warning("请先登录！");
+    // }
   },
   mounted() {},
   created() {
