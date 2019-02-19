@@ -80,6 +80,7 @@
         组件效果，默认全展开，设置属性default-expand-all，可以不用写for遍历
       -->
       <el-tree
+        ref="treeDom"
         :data="treelist"
         show-checkbox
         node-key="id"
@@ -89,7 +90,7 @@
       ></el-tree>
       <div slot="footer" class="dialog-footer">
         <el-button @click="dialogFormVisible = false">取 消</el-button>
-        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+        <el-button type="primary" @click="setRights()">确 定</el-button>
       </div>
     </el-dialog>
   </el-card>
@@ -108,13 +109,56 @@ export default {
       defaultProps: {
         children: "children",
         label: "authName"
-      }
+      },
+      // 当前角色id
+      currRoleId: -1
     };
   },
   created() {
     this.getRoles();
   },
   methods: {
+    // 分配权限-发送请求
+    async setRights() {
+      // 看el-tree组件中是否提供属性或方法来获取两类节点
+      // 获取全选节点的id->getCheckedKeys->方法作用/方法形参/方法返回值(返回一个数组)->调用者->el-tree调用方法
+      // 把el标签变成DOM元素->DOM元素.js方法->在js中操作DOM元素->ref操作DOM
+      // 1. 给要操作的标签设置一个ref值
+      // 2. 在js中通过this.$refs.ref值.js方法
+      // console.log(this.$refs);//DOM元素
+
+      const arr1 = this.$refs.treeDom.getCheckedKeys();
+      // console.log(arr1);
+      // 获取半选节点的id
+      const arr2 = this.$refs.treeDom.getHalfCheckedKeys();
+      // console.log(arr2);
+      // :roleId是 角色id
+      // 在data中声明一个当前角色id :currRoleId，在打开对话框的时候，已经获取了当前的角色，可以给currRoleId赋值this.currRoleId = role.id;
+      // rids 权限id列表（全选的和半选的）
+      // 把两个数组变成一个数组
+      // const arr = concat(arr1, arr2);
+      // 或者 ES6 展开操作运算符 ...是固定写法，后面是容器的名字。容器可以是数组或对象，所用：会把后面的数组中的元素一个一个展开，放在定义的arr中
+      const arr = [...arr1, ...arr2];
+      // console.log(arr);
+      // 根据接口文档，需要的是数组以逗号分隔
+
+      const res = await this.$http.post(`roles/${this.currRoleId}/rights`, {
+        rids: arr.join()
+      });
+      // console.log(res);
+      const {
+        data,
+        meta: { msg, status }
+      } = res.data;
+      if (status === 200) {
+        // 关闭对话框
+        this.dialogFormVisible = false;
+        // 提示
+        this.$message.success(msg);
+        // 刷新列表
+        this.getRoles();
+      }
+    },
     //  角色列表--删除权限
     async deleteRights(role, rights) {
       // 发送请求
@@ -143,6 +187,7 @@ export default {
     },
     // 分配权限---打开对话框
     async showDiaSetRights(role) {
+      this.currRoleId = role.id;
       this.dialogFormVisible = true;
       // 发送请求，获取树形结构的数据
       const res = await this.$http.get(`rights/tree`);
@@ -183,7 +228,7 @@ export default {
             });
           });
         });
-        console.log(temp2);
+        // console.log(temp2);
         this.arrCheck = temp2;
       }
     },

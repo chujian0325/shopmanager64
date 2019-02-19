@@ -9,8 +9,6 @@ import '../src/assets/base.css'
 import moment from 'moment'
 import CusBread from './components/cusBread.vue'
 import HttpServer from './http.js'
-
-
 Vue.config.productionTip = false
 
 // 组件->两类+三步，定义一个全局组件
@@ -19,10 +17,7 @@ Vue.config.productionTip = false
 // 参数2：组件选项所在对象(因为导出的是组件选项所在对象，所以导入的也是组件选项所在对象，可以直接写CurBread)
 // Vue.component('CusBread',CurBread)
 // 导出的也是对象，name通过点的方式获得
-Vue.component(CusBread.name,CusBread)
-
-
-
+Vue.component(CusBread.name, CusBread)
 // 所有的Vue插件都是这样用
 // 希望这样使用axios，就是把axios变成Vue的插件
 Vue.use(HttpServer)
