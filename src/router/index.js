@@ -7,7 +7,7 @@ import Home from '@/components/home.vue'
 import Users from '@/components/users.vue'
 import Rights from '@/components/rights.vue'
 import Roles from '@/components/roles.vue'
-import { Message } from 'element-ui';
+import { Message } from 'element-ui'
 
 Vue.use(Router)
 
@@ -59,7 +59,7 @@ const router = new Router({
 // 对象 from 当前的路由配置对象(name)
 // next() 让路由配置继续生效
 router.beforeEach((to, from, next) => {
-  console.log('路由守卫执行-----')
+  // console.log('路由守卫执行-----')
   // console.log(to)
   // console.log(from)
   // 1. 如果要去的是login->next()

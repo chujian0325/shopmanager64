@@ -37,7 +37,7 @@ export default {
     async getTableData() {
       const res = await this.$http.get(`rights/list`);
       //   console.log("请求发起了--");
-      console.log(res);
+      // console.log(res);
       const {
         data,
         meta: { msg, status }
