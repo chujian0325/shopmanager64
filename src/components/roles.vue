@@ -10,7 +10,7 @@
           <!-- 一级权限的位置用v-for遍历，一级权限遍历得到的是5行，所以写在el-row位置 
             scope.row取出的是数组里的对象
           -->
-          <el-row class="level1" v-for="(item1,i) in scope.row.children" :key="item1.id">
+          <el-row class="level1" v-for="(item1) in scope.row.children" :key="item1.id">
             <el-col :span="4">
               <el-tag @close="deleteRights(scope.row,item1)" closable>{{item1.authName}}</el-tag>
               <i class="el-icon-arrow-right"></i>
@@ -65,6 +65,33 @@
         </template>
       </el-table-column>
     </el-table>
+    <!-- 对话框 分配角色-->
+    <el-dialog title="分配权限" :visible.sync="dialogFormVisible">
+      <!-- 
+        data  数据来源
+        show-checkbox  节点是否可被选择
+        node-key 每个节点唯一标识，通常是data数据中的id名
+        default-expanded-keys 默认展开，数组类型，数组中是id
+        default-checked-keys 默认选中 数组类型，数组中是id
+        props 配置选项{label、children} 来源于data绑定的数据源
+      -->
+      <!-- 
+        :default-expanded-keys="[2, 3]"  数组不能写死，定义一个arrExpand在data中声明
+        组件效果，默认全展开，设置属性default-expand-all，可以不用写for遍历
+      -->
+      <el-tree
+        :data="treelist"
+        show-checkbox
+        node-key="id"
+        default-expand-all
+        :default-checked-keys="arrCheck"
+        :props="defaultProps"
+      ></el-tree>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取 消</el-button>
+        <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -72,7 +99,16 @@
 export default {
   data() {
     return {
-      roles: []
+      roles: [],
+      dialogFormVisible: false,
+      // 树形结构相关数据
+      treelist: [],
+      // arrExpand: [],
+      arrCheck: [],
+      defaultProps: {
+        children: "children",
+        label: "authName"
+      }
     };
   },
   created() {
@@ -105,9 +141,53 @@ export default {
         role.children = data;
       }
     },
-    // 角色列表--设置角色
-    showDiaSetRights() {},
-    // 获取权限列表
+    // 分配权限---打开对话框
+    async showDiaSetRights(role) {
+      this.dialogFormVisible = true;
+      // 发送请求，获取树形结构的数据
+      const res = await this.$http.get(`rights/tree`);
+      // console.log(res);
+      const {
+        data,
+        meta: { msg, status }
+      } = res.data;
+      if (status === 200) {
+        this.treelist = data;
+        // console.log(data);
+        // console.log(this.treelist);
+        // 声明临时数组，保存id
+        // const temp = [];
+        // // for嵌套遍历，取出每一级的id
+        // this.treelist.forEach(item1 => {
+        //   temp.push(item1.id);
+        //   item1.children.forEach(item2 => {
+        //     temp.push(item2.id);
+        //     item2.children.forEach(item3 => {
+        //       temp.push(item3.id);
+        //     });
+        //   });
+        // });
+        // 组件效果，默认全展开，设置属性default-expand-all，可以不用写上层的遍历
+        // 得到所有的展开的数组id
+        // console.log(temp);
+        // this.arrExpand = temp;
+        // 获取当前角色所拥有的权限id <-拿到当前角色
+        // console.log(role);
+        const temp2 = [];
+        role.children.forEach(item1 => {
+          // temp2.push(item1.id);
+          item1.children.forEach(item2 => {
+            // temp2.push(item2.id);
+            item2.children.forEach(item3 => {
+              temp2.push(item3.id);
+            });
+          });
+        });
+        console.log(temp2);
+        this.arrCheck = temp2;
+      }
+    },
+    // 获取角色列表
     async getRoles() {
       const res = await this.$http.get(`roles`);
       //   console.log(res);
