@@ -12,9 +12,9 @@
         商品内容
     -->
     <el-steps :active="active*1" align-center>
+      <el-step title="基本信息"></el-step>
       <el-step title="商品参数"></el-step>
       <el-step title="商品属性"></el-step>
-      <el-step title="基本信息"></el-step>
       <el-step title="商品图片"></el-step>
       <el-step title="商品内容"></el-step>
     </el-steps>
@@ -73,11 +73,36 @@
         </el-tab-pane>
 
         <el-tab-pane name="3" label="商品属性">
-           <el-form-item :label="item.attr_name" v-for="(item,i) in arrStatic" :key="item.attr_id">
+          <el-form-item :label="item.attr_name" v-for="(item) in arrStatic" :key="item.attr_id">
             <el-input v-model="item.attr_vals"></el-input>
           </el-form-item>
         </el-tab-pane>
-        <el-tab-pane name="4" label="商品图片">商品图片-----</el-tab-pane>
+        <el-tab-pane name="4" label="商品图片">
+          <!-- 
+            1. action 上传的服务器全路径（全路径网址）
+            2. headers 请求头
+            3. on-success 成功时的函数
+            4. on-remove 移除时的函数
+            注意：
+            1. action全路径
+            之前用axiosAPI设置baseUrl，当用axios发送请求时不用写baseUrl
+            上传图片发请求不是axios发请求
+            2. 任何非登录请求要授权，授权就要设置头部headers
+            之前用了axios拦截器，里面的config.headers[]=token ,这个设置只针对axios请求有效
+          -->
+          <el-form-item label="商品图片">
+            <el-upload
+              multiple
+              action="http://localhost:8888/api/private/v1/upload/"
+              :headers="headers"
+              :on-remove="handleRemove"
+              :on-success="handleSuccess"
+              list-type="picture"
+            >
+              <el-button size="small" type="primary">点击上传</el-button>
+            </el-upload>
+          </el-form-item>
+        </el-tab-pane>
         <el-tab-pane name="5" label="商品内容">商品内容-----</el-tab-pane>
       </el-tabs>
     </el-form>
@@ -121,13 +146,31 @@ export default {
       // 动态参数数组
       arrDy: [],
       // 静态参数数组
-      arrStatic: []
+      arrStatic: [],
+      // 请求头
+      headers: {
+        Authorization: localStorage.getItem("token")
+      }
     };
   },
   created() {
     this.getGoodsCate();
   },
   methods: {
+    // 图片上传相关方法
+    handleRemove(file, fileList) {
+      console.log("remove----");
+
+      console.log(file);
+      // file.response.data.tmp_path 临时路径
+    },
+    handleSuccess(response, file, fileList) {
+      console.log("success----");
+
+      console.log(response);
+      // 此时response的上传成功时假的，真正的上传成功应该是在点击添加商品的时候发送请求->上传
+      // response.data.tmp_path 临时路径
+    },
     // 点任何tab都会触发该事件
     async changeTab() {
       // 判断点的是不是第二个tab
@@ -150,8 +193,7 @@ export default {
           } = res.data;
           if (status === 200) {
             this.arrStatic = data;
-            console.log(this.arrStatic);
-            
+            // console.log(this.arrStatic);
           }
         }
 
