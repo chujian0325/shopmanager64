@@ -10,8 +10,6 @@ import Roles from '@/components/roles.vue'
 import { Message } from 'element-ui'
 import Goodslist from '@/components/goodslist.vue'
 import Goodsadd from '@/components/goodsadd.vue'
-
-
 Vue.use(Router)
 
 const router = new Router({
