@@ -103,14 +103,34 @@
             </el-upload>
           </el-form-item>
         </el-tab-pane>
-        <el-tab-pane name="5" label="商品内容">商品内容-----</el-tab-pane>
+        <el-tab-pane name="5" label="商品内容">
+          <el-form-item>
+            <el-button @click="addGoods()">添加商品</el-button>
+            <!-- 富文本编辑器 -->
+            <quill-editor
+            class="quill"
+            v-model="form.goods_introduce"
+            ></quill-editor>
+          </el-form-item>
+        </el-tab-pane>
       </el-tabs>
     </el-form>
   </el-card>
 </template>
 
 <script>
+// 1. 根据包说明导入富文本编辑器的样式
+// 2. 注册局部组件
+// 3. 使用组件：通过组件名+短横线的方式
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import { quillEditor } from 'vue-quill-editor'
 export default {
+  // 2. 注册局部组件
+  components: {
+    quillEditor
+  },
   data() {
     return {
       active: "1",
@@ -157,6 +177,10 @@ export default {
     this.getGoodsCate();
   },
   methods: {
+    // 添加商品
+    addGoods(){
+
+    },
     // 图片上传相关方法
     handleRemove(file, fileList) {
       console.log("remove----");
@@ -267,5 +291,8 @@ export default {
 .form {
   height: 350px;
   overflow: auto;
+}
+.ql-editor,.ql-blank{
+  min-height: 200px;
 }
 </style>
