@@ -72,7 +72,11 @@
           </el-form-item>
         </el-tab-pane>
 
-        <el-tab-pane name="3" label="商品属性">商品属性-----</el-tab-pane>
+        <el-tab-pane name="3" label="商品属性">
+           <el-form-item :label="item.attr_name" v-for="(item,i) in arrStatic" :key="item.attr_id">
+            <el-input v-model="item.attr_vals"></el-input>
+          </el-form-item>
+        </el-tab-pane>
         <el-tab-pane name="4" label="商品图片">商品图片-----</el-tab-pane>
         <el-tab-pane name="5" label="商品内容">商品内容-----</el-tab-pane>
       </el-tabs>
@@ -116,7 +120,8 @@ export default {
       },
       // 动态参数数组
       arrDy: [],
-     
+      // 静态参数数组
+      arrStatic: []
     };
   },
   created() {
@@ -126,48 +131,67 @@ export default {
     // 点任何tab都会触发该事件
     async changeTab() {
       // 判断点的是不是第二个tab
-      if (this.active === "2") {
+      if (this.active === "2" || this.active == "3") {
         // 判断是否选了三级分类,如果不是三级分类
         if (this.selectedOptions.length !== 3) {
           // 提示
           this.$message.error("请先选择三级分类！");
           return;
         }
+        // 获取静态参数数据
+        if (this.active === "3") {
+          const res = await this.$http.get(
+            `categories/${this.selectedOptions[2]}/attributes?sel=only`
+          );
+          // console.log(res);
+          const {
+            data,
+            meta: { msg, status }
+          } = res.data;
+          if (status === 200) {
+            this.arrStatic = data;
+            console.log(this.arrStatic);
+            
+          }
+        }
+
         // 获取动态参数数据
-        // :id是分类id，这里是selectedOptions中的6
-        const res = await this.$http.get(
-          `categories/${this.selectedOptions[2]}/attributes?sel=many`
-        );
-        // console.log(res);
-        const {
-          data,
-          meta: { msg, status }
-        } = res.data;
-        if (status === 200) {
-          // 此时data就是动态参数数据，在data中声明一个数组，接收
-          this.arrDy = data;
-          console.log(this.arrDy);
-          // this.arrDy中的attr_vals是字符串，我们要的是数组
-          // 可以遍历
-          this.arrDy.forEach(item => {
-            // item.attr_vals = item.attr_vals.split(",");
-            // console.log(item.attr_vals);
-            // 如果后台返回的数据中有空格，还要去掉空格
-            // "  a,b,c,d  "
-            // 如果后台返回的是空字符串""，空字符串中没有逗号，不能调用split方法，要判断一下
-            // if (item.attr_vals.length === 0) {
-            //   // 返回一个空数组，空数组是可以遍历的
-            //   item.attr_vals = [];
-            // } else {
-            //   item.attr_vals = item.attr_vals.trim().split(",");
-            // }
-            // 三元形式
-            item.attr_vals =
-              item.attr_vals.trim().length === 0
-                ? []
-                : item.attr_vals.trim().split(",");
-            // console.log(item.attr_vals);
-          });
+        if (this.active === "2") {
+          // :id是分类id，这里是selectedOptions中的6
+          const res = await this.$http.get(
+            `categories/${this.selectedOptions[2]}/attributes?sel=many`
+          );
+          // console.log(res);
+          const {
+            data,
+            meta: { msg, status }
+          } = res.data;
+          if (status === 200) {
+            // 此时data就是动态参数数据，在data中声明一个数组，接收
+            this.arrDy = data;
+            // console.log(this.arrDy);
+            // this.arrDy中的attr_vals是字符串，我们要的是数组
+            // 可以遍历
+            this.arrDy.forEach(item => {
+              // item.attr_vals = item.attr_vals.split(",");
+              // console.log(item.attr_vals);
+              // 如果后台返回的数据中有空格，还要去掉空格
+              // "  a,b,c,d  "
+              // 如果后台返回的是空字符串""，空字符串中没有逗号，不能调用split方法，要判断一下
+              // if (item.attr_vals.length === 0) {
+              //   // 返回一个空数组，空数组是可以遍历的
+              //   item.attr_vals = [];
+              // } else {
+              //   item.attr_vals = item.attr_vals.trim().split(",");
+              // }
+              // 三元形式
+              item.attr_vals =
+                item.attr_vals.trim().length === 0
+                  ? []
+                  : item.attr_vals.trim().split(",");
+              // console.log(item.attr_vals);
+            });
+          }
         }
       }
     },
