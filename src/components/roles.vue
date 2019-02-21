@@ -53,7 +53,14 @@
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
           <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
-          <el-button size="mini" plain type="danger" icon="el-icon-delete" circle></el-button>
+          <el-button
+            size="mini"
+            plain
+            type="danger"
+            icon="el-icon-delete"
+            circle
+            @click="showDiaDeleRights(scope.row)"
+          ></el-button>
           <el-button
             @click="showDiaSetRights(scope.row)"
             size="mini"
@@ -118,6 +125,27 @@ export default {
     this.getRoles();
   },
   methods: {
+    // 删除权限--显示删除确认框
+    showDiaDeleRights(role) {
+      this.$confirm("确定删除吗?", "提示", {
+        confirmButtonText: "确定",
+        cancelButtonText: "取消",
+      })
+        .then(async () => {
+          const res = await this.$http.delete(`roles/${role.id}`);
+          // console.log(res);
+          const {
+            meta: { msg, status }
+          } = res.data;
+          if (status === 200) {
+            this.$message.success(msg);
+            this.getRoles();
+          }
+        })
+        .catch(() => {
+          this.$message.warning("取消删除!");
+        });
+    },
     // 分配权限-发送请求
     async setRights() {
       // 看el-tree组件中是否提供属性或方法来获取两类节点
