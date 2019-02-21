@@ -274,6 +274,12 @@ export default {
         if (this.selectedOptions.length !== 3) {
           // 提示
           this.$message.error("请先选择三级分类！");
+          // 如果点的是第二个tab，清空动态数组，如果是第三个清空静态数组
+          if (this.active === "2") {
+            this.arrDy = [];
+          } else {
+            this.arrStatic = [];
+          }
           return;
         }
         // 获取静态参数数据
