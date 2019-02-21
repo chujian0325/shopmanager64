@@ -52,7 +52,14 @@
 
       <el-table-column label="操作" width="200">
         <template slot-scope="scope">
-          <el-button size="mini" plain type="primary" icon="el-icon-edit" circle></el-button>
+          <el-button
+            size="mini"
+            plain
+            type="primary"
+            icon="el-icon-edit"
+            circle
+            @click="showDiaEditRole(scope.row)"
+          ></el-button>
           <el-button
             size="mini"
             plain
@@ -115,6 +122,21 @@
         <el-button type="primary" @click="addRole()">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 对话框-编辑角色 -->
+    <el-dialog title="编辑角色" :visible.sync="dialogFormVisibleEdit">
+      <el-form label-position="left" label-width="80px" :model="formdata">
+        <el-form-item label="角色名称	">
+          <el-input disabled v-model="formdata.roleName"></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述">
+          <el-input v-model="formdata.roleDesc"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleEdit = false">取 消</el-button>
+        <el-button type="primary" @click="editRole()">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -125,6 +147,7 @@ export default {
       roles: [],
       dialogFormVisible: false,
       dialogFormVisibleAdd: false,
+      dialogFormVisibleEdit: false,
       // 树形结构相关数据
       treelist: [],
       // arrExpand: [],
@@ -138,7 +161,8 @@ export default {
       // 添加角色数据
       formdata: {
         roleName: "",
-        roleDesc: ""
+        roleDesc: "",
+        roleId:-1
       }
     };
   },
@@ -146,6 +170,41 @@ export default {
     this.getRoles();
   },
   methods: {
+    // 编辑角色--发送请求
+    async editRole() {
+      // 展示对话框得到的this.formdata中的角色id属性名是roleId
+      const res = await this.$http.put(
+        `roles/${this.formdata.roleId}`,
+        this.formdata
+      );
+      // console.log(res);
+      const {
+        meta: { msg, status }
+      } = res.data;
+      if (status === 200) {
+        // 关闭对话框，
+        this.dialogFormVisibleEdit = false;
+        // 重新加载表格
+        this.getRoles();
+      }
+    },
+    // 编辑角色--显示对话框
+    async showDiaEditRole(role) {
+      
+      // console.log(role);
+      
+      // 获取当前角色
+      // this.formdata = role;
+      // console.log(this.formdata);
+      // 根据id查询角色
+      const res = await this.$http.get(`roles/${role.id}`);
+      // console.log(res);
+      this.formdata = res.data.data;
+
+      // console.log(this.formdata);
+
+      this.dialogFormVisibleEdit = true;
+    },
     // 添加角色--发送请求
     async addRole() {
       const res = await this.$http.post(`roles`, this.formdata);
@@ -242,7 +301,7 @@ export default {
       const res = await this.$http.delete(
         `roles/${role.id}/rights/${rights.id}`
       );
-      console.log(res);
+      // console.log(res);
       const {
         data,
         meta: { msg, status }

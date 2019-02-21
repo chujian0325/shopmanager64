@@ -59,7 +59,7 @@ const router = new Router({
 // 对象 from 当前的路由配置对象(name)
 // next() 让路由配置继续生效
 router.beforeEach((to, from, next) => {
-  console.log('路由守卫执行-----')
+  // console.log('路由守卫执行-----')
   // console.log(to)
   // console.log(from)
   // 1. 如果要去的是login->next()
