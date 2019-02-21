@@ -107,10 +107,7 @@
           <el-form-item>
             <el-button @click="addGoods()">添加商品</el-button>
             <!-- 富文本编辑器 -->
-            <quill-editor
-            class="quill"
-            v-model="form.goods_introduce"
-            ></quill-editor>
+            <quill-editor class="quill" v-model="form.goods_introduce"></quill-editor>
           </el-form-item>
         </el-tab-pane>
       </el-tabs>
@@ -122,10 +119,10 @@
 // 1. 根据包说明导入富文本编辑器的样式
 // 2. 注册局部组件
 // 3. 使用组件：通过组件名+短横线的方式
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
-import { quillEditor } from 'vue-quill-editor'
+import "quill/dist/quill.core.css";
+import "quill/dist/quill.snow.css";
+import "quill/dist/quill.bubble.css";
+import { quillEditor } from "vue-quill-editor";
 export default {
   // 2. 注册局部组件
   components: {
@@ -136,13 +133,15 @@ export default {
       active: "1",
       // 添加商品的表单数据
       // goods_name	商品名称	不能为空
-      // goods_cat	以为','分割的分类列表	不能为空
       // goods_price	价格	不能为空
       // goods_number	数量	不能为空
       // goods_weight	重量	不能为空
       // goods_introduce	介绍	可以为空
-      // pics	上传的图片临时路径（对象）	可以为空
-      // attrs	商品的参数（数组）	可以为空
+
+      // goods_cat	以为','分割的分类列表	不能为空[1,2,3]->"1,2,3"
+      // pics	上传的图片临时路径（对象）	可以为空，根据接口文档的响应数据可以得知pics是一个数组，数组中放了对象，对象的值是临时路径 ->pics:[{pic:临时路径}]
+      // attrs	商品的参数（数组）	可以为空->参数：动态参数+静态参数
+      // ->[{attr_id:?,attr_value:?}] ?的来源->arrDy和arrStatic中每个对象的attr_id和attr_vals
       form: {
         goods_name: "",
         goods_cat: "",
@@ -150,8 +149,8 @@ export default {
         goods_number: "",
         goods_weight: "",
         goods_introduce: "",
-        pics: "",
-        attrs: ""
+        pics: [],
+        attrs: []
       },
       // 级联选择器使用的数据
       options: [],
@@ -178,22 +177,94 @@ export default {
   },
   methods: {
     // 添加商品
-    addGoods(){
+    async addGoods() {
+      // 发送请求之前处理之前未处理的数据
+      // 1. 处理goods_cat 要的是"1,2,3"
+      this.form.goods_cat = this.selectedOptions.join(",");
+      // 2. this.form.pics->在图片上传方法中使用splice和push
+      // 3. 处理attrs->[{attr_id:?,attr_value:?}]
 
+      // 动态参数数组
+      // 1. 能遍历
+      // 2. 能返回数组
+      // 3. return "abc"/obj  return 啥就能把啥放到数组中并返回
+      // -> 数组方法map()
+      const arr1 = this.arrDy.map(item => {
+        // 要的是
+        // item.attr_id
+        // item.attr_vals
+        // 把上面的两个值变成对象的形式
+        // {attr_id:item.attr_id,attr_value:item.attr_vals}
+        return { attr_id: item.attr_id, attr_value: item.attr_vals };
+      });
+      // console.log(arr1);
+      // // 如果不知道map方法，可以采用其他遍历方法
+      // const obj1 = { attr_id: "", attr_value: "" };
+      // const arr1 = [];
+      // this.arrDy.forEach(item => {
+      //   // 给对象动态添加成员
+      //   obj1.attr_id = item.attr_id;
+      //   obj1.attr_value = item.attr_vals;
+      //   arr1.push(obj1);
+      // });
+      // console.log(arr1);
+
+      // 静态参数数组
+      const arr2 = this.arrStatic.map(item => {
+        return { attr_id: item.attr_id, attr_value: item.attr_vals };
+      });
+      // console.log(arr2);
+      this.form.attrs = [...arr1, ...arr2];
+      // console.log(this.form.attrs);
+
+      const res = await this.$http.post(`goods`, this.form);
+      console.log(res);
+      const {
+        data,
+        meta: { msg, status }
+      } = res.data;
+      if (status === 201) {
+        // 提示
+        this.$message.success(msg);
+        // 返回列表页
+        this.$router.push({
+          name: "goods"
+        });
+      } else {
+        this.$message.error(msg);
+      }
     },
     // 图片上传相关方法
     handleRemove(file, fileList) {
-      console.log("remove----");
-
-      console.log(file);
+      // console.log("remove----");
+      // console.log(file);
       // file.response.data.tmp_path 临时路径
+      // 移除时，从pics数组中移除当前的图片的临时路径
+      // splice()移除，
+      // const Index=?;
+      // 要找到数组中当前移除的元素，需要遍历
+      // 1. 能遍历
+      // 2. return 条件的
+      // 3. 返回符合条件的索引
+      // ->findIndex() ES6数组新增API
+      const Index = this.form.pics.findIndex(item => {
+        // item是数组中的每个对象 item.pic是临时路径
+        // return item.pic=当前移除的图片的临时路径
+        return (item.pic = file.response.data.tmp_path);
+      });
+      this.form.pics.splice(Index, 1);
+      // console.log(this.form.pics);
     },
     handleSuccess(response, file, fileList) {
-      console.log("success----");
-
-      console.log(response);
+      // console.log("success----");
+      // console.log(response);
       // 此时response的上传成功时假的，真正的上传成功应该是在点击添加商品的时候发送请求->上传
       // response.data.tmp_path 临时路径
+      // 在有临时路径的地方给数组pics赋值
+      this.form.pics.push({
+        pic: response.data.tmp_path
+      });
+      // console.log(this.form.pics);
     },
     // 点任何tab都会触发该事件
     async changeTab() {
@@ -217,7 +288,9 @@ export default {
           } = res.data;
           if (status === 200) {
             this.arrStatic = data;
-            // console.log(this.arrStatic);
+            console.log("静态参数");
+
+            console.log(this.arrStatic);
           }
         }
 
@@ -235,7 +308,9 @@ export default {
           if (status === 200) {
             // 此时data就是动态参数数据，在data中声明一个数组，接收
             this.arrDy = data;
-            // console.log(this.arrDy);
+            console.log("动态参数");
+
+            console.log(this.arrDy);
             // this.arrDy中的attr_vals是字符串，我们要的是数组
             // 可以遍历
             this.arrDy.forEach(item => {
@@ -292,7 +367,8 @@ export default {
   height: 350px;
   overflow: auto;
 }
-.ql-editor,.ql-blank{
+.ql-editor,
+.ql-blank {
   min-height: 200px;
 }
 </style>
