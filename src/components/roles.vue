@@ -1,7 +1,7 @@
 <template>
   <el-card class="box">
     <cus-bread level1="权限管理" level2="角色列表"></cus-bread>
-    <el-button class="btn" type="primary">添加角色</el-button>
+    <el-button @click="showDiaAddRole()" class="btn" type="primary">添加角色</el-button>
     <!-- 表格 -->
     <el-table height="350px" :data="roles" style="width: 100%">
       <el-table-column type="expand" width="80">
@@ -59,7 +59,7 @@
             type="danger"
             icon="el-icon-delete"
             circle
-            @click="showDiaDeleRights(scope.row)"
+            @click="showDiaDeleRole(scope.row)"
           ></el-button>
           <el-button
             @click="showDiaSetRights(scope.row)"
@@ -100,6 +100,21 @@
         <el-button type="primary" @click="setRights()">确 定</el-button>
       </div>
     </el-dialog>
+    <!-- 对话框-添加角色 -->
+    <el-dialog title="添加角色" :visible.sync="dialogFormVisibleAdd">
+      <el-form label-position="left" label-width="80px" :model="formdata">
+        <el-form-item label="角色名称">
+          <el-input v-model="formdata.roleName"></el-input>
+        </el-form-item>
+        <el-form-item label="角色描述">
+          <el-input v-model="formdata.roleDesc"></el-input>
+        </el-form-item>
+      </el-form>
+      <div slot="footer" class="dialog-footer">
+        <el-button @click="dialogFormVisibleAdd = false">取 消</el-button>
+        <el-button type="primary" @click="addRole()">确 定</el-button>
+      </div>
+    </el-dialog>
   </el-card>
 </template>
 
@@ -109,6 +124,7 @@ export default {
     return {
       roles: [],
       dialogFormVisible: false,
+      dialogFormVisibleAdd: false,
       // 树形结构相关数据
       treelist: [],
       // arrExpand: [],
@@ -118,18 +134,46 @@ export default {
         label: "authName"
       },
       // 当前角色id
-      currRoleId: -1
+      currRoleId: -1,
+      // 添加角色数据
+      formdata: {
+        roleName: "",
+        roleDesc: ""
+      }
     };
   },
   created() {
     this.getRoles();
   },
   methods: {
-    // 删除权限--显示删除确认框
-    showDiaDeleRights(role) {
+    // 添加角色--发送请求
+    async addRole() {
+      const res = await this.$http.post(`roles`, this.formdata);
+      // console.log(res);
+      const {
+        data,
+        meta: { msg, status }
+      } = res.data;
+      if (status === 201) {
+        // 消息提示
+        this.$message.success(msg);
+        // 关闭对话框
+        this.dialogFormVisibleAdd = false;
+        // 更新表格
+        this.getRoles();
+      }
+    },
+    // 添加角色--显示对话框
+    showDiaAddRole() {
+      // 一打开对话框，就清空表单
+      this.formdata = {};
+      this.dialogFormVisibleAdd = true;
+    },
+    // 删除角色--显示删除确认框
+    showDiaDeleRole(role) {
       this.$confirm("确定删除吗?", "提示", {
         confirmButtonText: "确定",
-        cancelButtonText: "取消",
+        cancelButtonText: "取消"
       })
         .then(async () => {
           const res = await this.$http.delete(`roles/${role.id}`);
