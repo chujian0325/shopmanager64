@@ -1,7 +1,7 @@
 <template>
   <el-card class="box">
     <!-- 面包屑  -->
-   <cus-bread level1="用户管理" level2="用户列表"></cus-bread>
+    <cus-bread level1="用户管理" level2="用户列表"></cus-bread>
     <!-- 搜索+添加 -->
     <el-row class="serachBox">
       <el-col>
@@ -19,7 +19,7 @@
       </el-col>
     </el-row>
     <!-- 表格 -->
-    <el-table height="350px" :data="list" style="width: 100%">
+    <el-table v-loading="loading" height="350px" :data="list" style="width: 100%">
       <!--
         id: 500
         username: "admin"
@@ -222,6 +222,7 @@
 export default {
   data () {
     return {
+      loading:true,
       query: '',
       pagenum: 1,
       pagesize: 2,
@@ -467,6 +468,7 @@ export default {
         meta: { msg, status }
       } = res.data
       if (status === 200) {
+        this.loading = false;
         // res中有total总条数
         this.total = data.total
 
