@@ -16,9 +16,10 @@
     <el-container>
       <el-aside class="aside" width="200px">
         <el-menu
+          @select="fn"
           :unique-opened="true"
           :router="true"
-          default-active="2"
+          :default-active="$route.name"
           class="el-menu-vertical-demo"
         >
           <!-- 1 -->
@@ -28,7 +29,8 @@
               <span>{{item1.authName}}</span>
             </template>
             <el-menu-item :index="item2.path" v-for="(item2) in item1.children" :key="item2.id">
-              <i class="el-icon-menu"></i>{{item2.authName}}
+              <i class="el-icon-menu"></i>
+              {{item2.authName}}
             </el-menu-item>
           </el-submenu>
         </el-menu>
@@ -73,6 +75,16 @@ export default {
     this.getMenus();
   },
   methods: {
+    // 导航激活事件
+    fn(index, indexPath) {
+      // console.log(index); // 标识goods
+      // console.log(indexPath);//数组，第一个是控制的是第几个导航，第二个时标识即index  [1,goods]
+      // fn触发时，要获取当前点击的路由数据
+      console.log(this.$route.name);
+      // this.$route路由配置对象，里面有当期的标识
+      // this.$route.name就是当前点击的路由标识，绑定给el-menu
+      //  default-active="$route.name"
+    },
     // 动态导航
     async getMenus() {
       const res = await this.$http.get(`menus`);
