@@ -3,7 +3,7 @@
     <cus-bread level1="权限管理" level2="角色列表"></cus-bread>
     <el-button @click="showDiaAddRole()" class="btn" type="primary">添加角色</el-button>
     <!-- 表格 -->
-    <el-table height="350px" :data="roles" style="width: 100%">
+    <el-table @expand-change="fn" height="350px" :data="roles" style="width: 100%">
       <el-table-column type="expand" width="80">
         <template slot-scope="scope">
           <!-- 行列布局 -->
@@ -162,7 +162,7 @@ export default {
       formdata: {
         roleName: "",
         roleDesc: "",
-        roleId:-1
+        roleId: -1
       }
     };
   },
@@ -170,6 +170,19 @@ export default {
     this.getRoles();
   },
   methods: {
+    // 当表格展开或关闭某一行时触发
+    fn(row, expandedRows) {
+      // console.log(row);
+      // console.log(expandedRows);
+      // 分析可得：row是当前点击的角色，类型是对象
+      // expandedRows是所有当前展开的行所绑定的数据，类型是数组
+      // 只想展开一个，那么数组长度永远为1
+      // 第一次点击，长度=1，不会进到判断，第二次点击时，判断>1，删除第一个元素
+      if (expandedRows.length > 1) {
+        // 当展开第二个时，删除第一个元素
+        expandedRows.shift();
+      }
+    },
     // 编辑角色--发送请求
     async editRole() {
       // 展示对话框得到的this.formdata中的角色id属性名是roleId
@@ -190,9 +203,8 @@ export default {
     },
     // 编辑角色--显示对话框
     async showDiaEditRole(role) {
-      
       // console.log(role);
-      
+
       // 获取当前角色
       // this.formdata = role;
       // console.log(this.formdata);
