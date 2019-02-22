@@ -20,7 +20,7 @@
       </el-form-item>
     </el-form>
     <!-- tab切换 -->
-    <el-tabs v-model="active" @tab-click="handleClick">
+    <el-tabs v-model="active" @tab-click="changeTab()">
       <el-tab-pane label="动态参数" name="1">
         <el-button disabled>设置动态参数</el-button>
         <!-- 表格 -->
@@ -63,7 +63,22 @@
           </el-table-column>
         </el-table>
       </el-tab-pane>
-      <el-tab-pane label="静态参数" name="2">静态参数</el-tab-pane>
+      <el-tab-pane label="静态参数" name="2">
+        <el-button disabled>设置静态参数</el-button>
+        <el-table height="250px" border stripe :data="arrStatic" style="width: 100%">
+        
+          <!-- 序号 -->
+          <el-table-column type="index" label="#" width="120"></el-table-column>
+          <el-table-column prop="attr_name" label="属性名称"></el-table-column>
+           <el-table-column prop="attr_vals" label="属性值"></el-table-column>
+          <el-table-column label="操作" width="100">
+            <template slot-scope="scope">
+              <el-button plain size="mini" type="primary" icon="el-icon-edit" circle></el-button>
+              <el-button plain size="mini" type="danger" icon="el-icon-delete" circle></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-tab-pane>
     </el-tabs>
   </el-card>
 </template>
@@ -152,13 +167,27 @@ export default {
       this.inputVisible = false;
       this.inputValue = "";
     },
-    handleClick() {},
+    changeTab() {
+      // tab改变时也要拿数据
+      this.getDyOrStatic();
+    },
     // 级联的label改变时触发该事件
     async handleChange() {
+      this.getDyOrStatic();
+    },
+    // 获取动态获取静态数据
+    async getDyOrStatic() {
       // 如果级联的数组的长度是不是3
       if (this.selectedOptions.length !== 3) {
         // 提示
         this.$message.warning("请先选择三级分类！");
+        if (this.active === "1") {
+          this.arrDy = [];
+        }
+        if (this.active == "2") {
+          this.arrStatic = [];
+        }
+
         return;
       }
       // 获取动态参数数据
@@ -184,6 +213,23 @@ export default {
                 : item.attr_vals.trim().split(",");
             // console.log(item.attr_vals);
           });
+        }
+      }
+      // 获取静态参数数据
+      if (this.active === "2") {
+        const res = await this.$http.get(
+          `categories/${this.selectedOptions[2]}/attributes?sel=only`
+        );
+        // console.log(res);
+        const {
+          data,
+          meta: { msg, status }
+        } = res.data;
+        if (status === 200) {
+          this.arrStatic = data;
+          console.log("静态参数");
+
+          console.log(this.arrStatic);
         }
       }
     },
