@@ -6,6 +6,7 @@
 // axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
 
 import axios from 'axios'
+import { Message } from 'element-ui'
 // 提供一个空对象
 const HttpServer = {};
 // 添加成员
@@ -36,7 +37,27 @@ HttpServer.install = function (Vue) {
     // 对请求错误做些什么
     return Promise.reject(error);
   });
-
+  // 添加响应拦截器，统一处理非200和201的情况
+  axios.interceptors.response.use(function (response) {
+    // 对响应数据做点什么
+    // console.log("res拦截器-----");
+    // console.log(response);
+    const {
+      meta: {
+        msg,
+        status
+      }
+    } = response.data
+    // 统一处理非200和201的情况
+    if (status !== 200 && status !== 201) {
+      // 提示
+      Message.warning(msg)
+    }
+    return response;
+  }, function (error) {
+    // 对响应错误做点什么
+    return Promise.reject(error);
+  });
   Vue.prototype.$http = axios
 }
 // 导出
