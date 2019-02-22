@@ -65,12 +65,11 @@
       </el-tab-pane>
       <el-tab-pane label="静态参数" name="2">
         <el-button disabled>设置静态参数</el-button>
-        <el-table height="250px" border stripe :data="arrStatic" style="width: 100%">
-        
+        <el-table height="350px" border stripe :data="arrStatic" style="width: 100%">
           <!-- 序号 -->
           <el-table-column type="index" label="#" width="120"></el-table-column>
           <el-table-column prop="attr_name" label="属性名称"></el-table-column>
-           <el-table-column prop="attr_vals" label="属性值"></el-table-column>
+          <el-table-column prop="attr_vals" label="属性值"></el-table-column>
           <el-table-column label="操作" width="100">
             <template slot-scope="scope">
               <el-button plain size="mini" type="primary" icon="el-icon-edit" circle></el-button>
