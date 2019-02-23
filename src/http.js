@@ -6,7 +6,9 @@
 // axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
 
 import axios from 'axios'
-import { Message } from 'element-ui'
+import {
+  Message
+} from 'element-ui'
 // 提供一个空对象
 const HttpServer = {};
 // 添加成员

@@ -24,7 +24,7 @@
       <el-tab-pane label="动态参数" name="1">
         <el-button disabled>设置动态参数</el-button>
         <!-- 表格 -->
-        <el-table border stripe :data="arrDy" style="width: 100%">
+        <el-table @expand-change="fn" border stripe :data="arrDy" style="width: 100%">
           <!-- 展开
             展开要的不是prop的内容，加个template,设置slot-scope="scope"
           -->
@@ -109,6 +109,12 @@ export default {
     this.getGoodsCate();
   },
   methods: {
+    fn(row, expandedRows) {
+      if (expandedRows.length > 1) {
+        // 当展开第二个时，删除第一个元素
+        expandedRows.shift();
+      }
+    },
     // 动态tag编辑相关方法
     // 删除
     async handleClose(obj, item) {
@@ -139,6 +145,12 @@ export default {
       // console.log(res);
       //数据库错误-> sql: "UPDATE `sp_attribute` SET `cat_id` = '6', `attr_vals` = ('aa', 'bb', 'cc') WHERE `attr_id` = 3077"
       // 数据库操作里面都是字符串，不能写数组，而我们的obj.attr_vals是数组，给它转成以逗号分隔的字符串
+      const {
+        meta: { msg, status }
+      } = res.data;
+      if (status === 200) {
+        this.$message.success(msg);
+      }
     },
 
     showInput() {
@@ -161,7 +173,13 @@ export default {
             attr_vals: obj.attr_vals.join(",")
           }
         );
-        console.log(res);
+        // console.log(res);
+        const {
+          meta: { msg, status }
+        } = res.data;
+        if (status === 200) {
+          this.$message.success(msg);
+        }
       }
       this.inputVisible = false;
       this.inputValue = "";
