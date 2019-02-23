@@ -29,7 +29,7 @@ HttpServer.install = function (Vue) {
       // 用axios设置头部
       // axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
       // config中有headers，设置头部
-      config.headers.common['Authorization'] = AUTH_TOKEN;
+      config.headers['Authorization'] = AUTH_TOKEN;
     }
 
     return config;
