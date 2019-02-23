@@ -112,7 +112,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .container {
   background-color: #b3c0d1;
   height: 100%;

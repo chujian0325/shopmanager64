@@ -1,23 +1,27 @@
 import Vue from 'vue'
-import Router from 'vue-router'
+import VueRouter from 'vue-router'
 // import Login from '../components/login.vue'
 // webpack提供了新功能，@符号表示src目录，所以导入组件的时候可以写@，会自动锁定为src目录
-import Login from '@/components/login.vue'
-import Home from '@/components/home.vue'
-import Users from '@/components/users.vue'
-import Rights from '@/components/rights.vue'
-import Roles from '@/components/roles.vue'
-import { Message } from 'element-ui'
-import Goodslist from '@/components/goodslist.vue'
-import Goodsadd from '@/components/goodsadd.vue'
-import Cateparams from '@/components/cateparams.vue'
-import Goodscate from '@/components/goodscate.vue'
-import Order from '@/components/order.vue'
-import Reports from '@/components/reports.vue'
 
-Vue.use(Router)
+// 路由懒加载语法  const Foo = () => import('./Foo.vue')
+const Login = () => import('@/components/login.vue')
+const Home = () => import('@/components/home.vue')
+const Users = () => import('@/components/users.vue')
+const Rights = () => import('@/components/rights.vue')
+const Roles = () => import('@/components/roles.vue')
+const Goodslist = () => import('@/components/goodslist.vue')
+const Goodsadd = () => import('@/components/goodsadd.vue')
+const Cateparams = () => import('@/components/cateparams.vue')
+const Goodscate = () => import('@/components/goodscate.vue')
+const Order = () => import('@/components/order.vue')
+const Reports = () => import('@/components/reports.vue')
 
-const router = new Router({
+import {
+  Message
+} from 'element-ui'
+Vue.use(VueRouter)
+
+const router = new VueRouter({
   routes: [{
     path: '/',
     name: 'home',
@@ -46,15 +50,15 @@ const router = new Router({
       name: 'params',
       path: '/params',
       component: Cateparams
-    },{
+    }, {
       name: 'categories',
       path: '/categories',
       component: Goodscate
-    },{
+    }, {
       name: 'orders',
       path: '/orders',
       component: Order
-    },{
+    }, {
       name: 'reports',
       path: '/reports',
       component: Reports

@@ -3,8 +3,8 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
-import ElementUI from 'element-ui'
-import 'element-ui/lib/theme-chalk/index.css'
+import ELEMENT from 'element-ui'
+// import 'element-ui/lib/theme-chalk/index.css'
 import '../src/assets/base.css'
 import moment from 'moment'
 import CusBread from './components/cusBread.vue'
@@ -21,7 +21,7 @@ Vue.component(CusBread.name, CusBread)
 // 所有的Vue插件都是这样用
 // 希望这样使用axios，就是把axios变成Vue的插件
 Vue.use(HttpServer)
-Vue.use(ElementUI)
+Vue.use(ELEMENT)
 
 // 全局过滤器，处理日期格式
 Vue.filter('fmtdate', (v) => {

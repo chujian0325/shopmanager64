@@ -480,7 +480,7 @@ export default {
 }
 </script>
 
-<style>
+<style scoped>
 .box {
   height: 100%;
 }

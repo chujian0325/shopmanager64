@@ -87,7 +87,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .searchArea {
   margin-top: 10px;
   margin-bottom: 10px;
