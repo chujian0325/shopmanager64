@@ -16,49 +16,49 @@
 </template>
 <script>
 export default {
-  data() {
+  data () {
     return {
       formdata: {
-        username: "",
-        password: ""
+        username: '',
+        password: ''
       }
-    };
+    }
   },
   methods: {
     // method中提供方法
     // 发送请求的前提是启动了api-server->node app.js
     // 服务器支持跨域，（api-server和项目代码不一定放在同级目录下）
-    async handleLogin() {
+    async handleLogin () {
       // 目前的代码，异步操作必须出现在.then方法的里面，代码会出现嵌套关系，
       // 不想在函数嵌套中处理res,想让它看起来是同步的代码，没有嵌套的关系
       // 需要使用ES7的特性：async  await
       // 1. 找异步代码
       // 2. 在异步代码前面加 await 同时接受异步的结果
       // 3. 在异步代码外层最近的函数前面加 async
-      const res = await this.$http.post(`login`, this.formdata);
-      console.log(res);
+      const res = await this.$http.post(`login`, this.formdata)
+      console.log(res)
       const {
         data: {
           data: { token },
           meta: { msg, status }
         }
-      } = res;
+      } = res
       if (status === 200) {
         // 把正确的用户token保存起来
         // 存值
-        localStorage.setItem("token", token);
+        localStorage.setItem('token', token)
         // 取值
         // const aa = localStorage.getItem("token");
         // console.log(aa);
         // console.log('success')
         // 登陆成功，渲染home组件，改标识，js改标识
         this.$router.push({
-          name: "home"
-        });
+          name: 'home'
+        })
       } else {
         // 提示框
         // console.log('err')
-        this.$message.error(msg);
+        this.$message.error(msg)
       }
     }
     //   this.$http
@@ -88,7 +88,7 @@ export default {
     //     });
     // }
   }
-};
+}
 </script>
 
 <style scoped>
