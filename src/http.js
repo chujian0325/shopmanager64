@@ -10,7 +10,7 @@ import {
   Message
 } from 'element-ui'
 // 提供一个空对象
-const HttpServer = {};
+const HttpServer = {}
 // 添加成员
 HttpServer.install = function (Vue) {
   // 插件要封装的代码
@@ -27,18 +27,18 @@ HttpServer.install = function (Vue) {
     // console.log(config);
     // url是请求的全路径，因为设置了baseUrl，所以在代码中写url时，会自动取出后面的相对路径
     if (config.url !== 'login') {
-      const AUTH_TOKEN = localStorage.getItem('token');
+      const AUTH_TOKEN = localStorage.getItem('token')
       // 用axios设置头部
       // axios.defaults.headers.common["Authorization"] = AUTH_TOKEN;
       // config中有headers，设置头部
-      config.headers['Authorization'] = AUTH_TOKEN;
+      config.headers['Authorization'] = AUTH_TOKEN
     }
 
-    return config;
+    return config
   }, function (error) {
     // 对请求错误做些什么
-    return Promise.reject(error);
-  });
+    return Promise.reject(error)
+  })
   // 添加响应拦截器，统一处理非200和201的情况
   axios.interceptors.response.use(function (response) {
     // 对响应数据做点什么
@@ -55,12 +55,12 @@ HttpServer.install = function (Vue) {
       // 提示
       Message.warning(msg)
     }
-    return response;
+    return response
   }, function (error) {
     // 对响应错误做点什么
-    return Promise.reject(error);
-  });
+    return Promise.reject(error)
+  })
   Vue.prototype.$http = axios
 }
 // 导出
-export default HttpServer;
+export default HttpServer

@@ -18,7 +18,7 @@
       <el-step title="商品图片"></el-step>
       <el-step title="商品内容"></el-step>
     </el-steps>
-    <!-- 标签页 
+    <!-- 标签页
         我们希望它能变，点的时候有反应，
         1. 用v-model绑定数据，双向数据绑定，v-model需要一个data数据
         2. 根据标签页el-tag：v-model绑定数据，需要设置name属性，如果active的值和el-tab的name值一样，就默认显示那个
@@ -41,7 +41,7 @@
             <el-input v-model="form.goods_number"></el-input>
           </el-form-item>
           <el-form-item label="商品分类">
-            <!-- 级联选择器 --表单元素 
+            <!-- 级联选择器 --表单元素
             options 数据源 []
             selectedOptions []可以有初始值
             -->
@@ -58,7 +58,7 @@
 
         <el-tab-pane name="2" label="商品参数">
           <!--复选框组
-             v-model绑定了数据，说明是表单元素，表单元素外层包裹el-form-item 
+             v-model绑定了数据，说明是表单元素，表单元素外层包裹el-form-item
              保留一个结构，用v-for遍历
           -->
           <!-- v-model="checkList"，checkList是数组，数组中是默认选中的label值，所以v-model绑定的是有全部label的数组，即item1.attr_vals -->
@@ -78,7 +78,7 @@
           </el-form-item>
         </el-tab-pane>
         <el-tab-pane name="4" label="商品图片">
-          <!-- 
+          <!--
             1. action 上传的服务器全路径（全路径网址）
             2. headers 请求头
             3. on-success 成功时的函数
@@ -119,36 +119,36 @@
 // 1. 根据包说明导入富文本编辑器的样式
 // 2. 注册局部组件
 // 3. 使用组件：通过组件名+短横线的方式
-import "quill/dist/quill.core.css";
-import "quill/dist/quill.snow.css";
-import "quill/dist/quill.bubble.css";
-import { quillEditor } from "vue-quill-editor";
+import 'quill/dist/quill.core.css'
+import 'quill/dist/quill.snow.css'
+import 'quill/dist/quill.bubble.css'
+import { quillEditor } from 'vue-quill-editor'
 export default {
   // 2. 注册局部组件
   components: {
     quillEditor
   },
-  data() {
+  data () {
     return {
-      active: "1",
+      active: '1',
       // 添加商品的表单数据
-      // goods_name	商品名称	不能为空
-      // goods_price	价格	不能为空
-      // goods_number	数量	不能为空
-      // goods_weight	重量	不能为空
-      // goods_introduce	介绍	可以为空
+      // goods_name 商品名称 不能为空
+      // goods_price 价格 不能为空
+      // goods_number 数量 不能为空
+      // goods_weight 重量 不能为空
+      // goods_introduce 介绍 可以为空
 
-      // goods_cat	以为','分割的分类列表	不能为空[1,2,3]->"1,2,3"
-      // pics	上传的图片临时路径（对象）	可以为空，根据接口文档的响应数据可以得知pics是一个数组，数组中放了对象，对象的值是临时路径 ->pics:[{pic:临时路径}]
-      // attrs	商品的参数（数组）	可以为空->参数：动态参数+静态参数
+      // goods_cat 以为','分割的分类列表 不能为空[1,2,3]->"1,2,3"
+      // pics 上传的图片临时路径（对象） 可以为空，根据接口文档的响应数据可以得知pics是一个数组，数组中放了对象，对象的值是临时路径 ->pics:[{pic:临时路径}]
+      // attrs 商品的参数（数组） 可以为空->参数：动态参数+静态参数
       // ->[{attr_id:?,attr_value:?}] ?的来源->arrDy和arrStatic中每个对象的attr_id和attr_vals
       form: {
-        goods_name: "",
-        goods_cat: "",
-        goods_price: "",
-        goods_number: "",
-        goods_weight: "",
-        goods_introduce: "",
+        goods_name: '',
+        goods_cat: '',
+        goods_price: '',
+        goods_number: '',
+        goods_weight: '',
+        goods_introduce: '',
         pics: [],
         attrs: []
       },
@@ -158,9 +158,9 @@ export default {
       defaultPro: {
         // label是我们能看到的名字，也就是分类的文本
         // value是唯一标识
-        label: "cat_name",
-        value: "cat_id",
-        children: "children"
+        label: 'cat_name',
+        value: 'cat_id',
+        children: 'children'
       },
       // 动态参数数组
       arrDy: [],
@@ -168,19 +168,19 @@ export default {
       arrStatic: [],
       // 请求头
       headers: {
-        Authorization: localStorage.getItem("token")
+        Authorization: localStorage.getItem('token')
       }
-    };
+    }
   },
-  created() {
-    this.getGoodsCate();
+  created () {
+    this.getGoodsCate()
   },
   methods: {
     // 添加商品
-    async addGoods() {
+    async addGoods () {
       // 发送请求之前处理之前未处理的数据
       // 1. 处理goods_cat 要的是"1,2,3"
-      this.form.goods_cat = this.selectedOptions.join(",");
+      this.form.goods_cat = this.selectedOptions.join(',')
       // 2. this.form.pics->在图片上传方法中使用splice和push
       // 3. 处理attrs->[{attr_id:?,attr_value:?}]
 
@@ -195,8 +195,8 @@ export default {
         // item.attr_vals
         // 把上面的两个值变成对象的形式
         // {attr_id:item.attr_id,attr_value:item.attr_vals}
-        return { attr_id: item.attr_id, attr_value: item.attr_vals };
-      });
+        return { attr_id: item.attr_id, attr_value: item.attr_vals }
+      })
       // console.log(arr1);
       // // 如果不知道map方法，可以采用其他遍历方法
       // const obj1 = { attr_id: "", attr_value: "" };
@@ -211,31 +211,30 @@ export default {
 
       // 静态参数数组
       const arr2 = this.arrStatic.map(item => {
-        return { attr_id: item.attr_id, attr_value: item.attr_vals };
-      });
+        return { attr_id: item.attr_id, attr_value: item.attr_vals }
+      })
       // console.log(arr2);
-      this.form.attrs = [...arr1, ...arr2];
+      this.form.attrs = [...arr1, ...arr2]
       // console.log(this.form.attrs);
 
-      const res = await this.$http.post(`goods`, this.form);
-      console.log(res);
+      const res = await this.$http.post(`goods`, this.form)
+      console.log(res)
       const {
-        data,
         meta: { msg, status }
-      } = res.data;
+      } = res.data
       if (status === 201) {
         // 提示
-        this.$message.success(msg);
+        this.$message.success(msg)
         // 返回列表页
         this.$router.push({
-          name: "goods"
-        });
+          name: 'goods'
+        })
       } else {
-        this.$message.error(msg);
+        this.$message.error(msg)
       }
     },
     // 图片上传相关方法
-    handleRemove(file, fileList) {
+    handleRemove (file, fileList) {
       // console.log("remove----");
       // console.log(file);
       // file.response.data.tmp_path 临时路径
@@ -250,12 +249,12 @@ export default {
       const Index = this.form.pics.findIndex(item => {
         // item是数组中的每个对象 item.pic是临时路径
         // return item.pic=当前移除的图片的临时路径
-        return (item.pic = file.response.data.tmp_path);
-      });
-      this.form.pics.splice(Index, 1);
+        return (item.pic = file.response.data.tmp_path)
+      })
+      this.form.pics.splice(Index, 1)
       // console.log(this.form.pics);
     },
-    handleSuccess(response, file, fileList) {
+    handleSuccess (response, file, fileList) {
       // console.log("success----");
       // console.log(response);
       // 此时response的上传成功时假的，真正的上传成功应该是在点击添加商品的时候发送请求->上传
@@ -263,60 +262,60 @@ export default {
       // 在有临时路径的地方给数组pics赋值
       this.form.pics.push({
         pic: response.data.tmp_path
-      });
+      })
       // console.log(this.form.pics);
     },
     // 点任何tab都会触发该事件
-    async changeTab() {
+    async changeTab () {
       // 判断点的是不是第二个tab
-      if (this.active === "2" || this.active == "3") {
+      if (this.active === '2' || this.active === '3') {
         // 判断是否选了三级分类,如果不是三级分类
         if (this.selectedOptions.length !== 3) {
           // 提示
-          this.$message.error("请先选择三级分类！");
+          this.$message.error('请先选择三级分类！')
           // 如果点的是第二个tab，清空动态数组，如果是第三个清空静态数组
-          if (this.active === "2") {
-            this.arrDy = [];
+          if (this.active === '2') {
+            this.arrDy = []
           } else {
-            this.arrStatic = [];
+            this.arrStatic = []
           }
-          return;
+          return
         }
         // 获取静态参数数据
-        if (this.active === "3") {
+        if (this.active === '3') {
           const res = await this.$http.get(
             `categories/${this.selectedOptions[2]}/attributes?sel=only`
-          );
+          )
           // console.log(res);
           const {
             data,
-            meta: { msg, status }
-          } = res.data;
+            meta: { status }
+          } = res.data
           if (status === 200) {
-            this.arrStatic = data;
-            console.log("静态参数");
+            this.arrStatic = data
+            console.log('静态参数')
 
-            console.log(this.arrStatic);
+            console.log(this.arrStatic)
           }
         }
 
         // 获取动态参数数据
-        if (this.active === "2") {
+        if (this.active === '2') {
           // :id是分类id，这里是selectedOptions中的6
           const res = await this.$http.get(
             `categories/${this.selectedOptions[2]}/attributes?sel=many`
-          );
+          )
           // console.log(res);
           const {
             data,
-            meta: { msg, status }
-          } = res.data;
+            meta: { status }
+          } = res.data
           if (status === 200) {
             // 此时data就是动态参数数据，在data中声明一个数组，接收
-            this.arrDy = data;
-            console.log("动态参数");
+            this.arrDy = data
+            console.log('动态参数')
 
-            console.log(this.arrDy);
+            console.log(this.arrDy)
             // this.arrDy中的attr_vals是字符串，我们要的是数组
             // 可以遍历
             this.arrDy.forEach(item => {
@@ -335,30 +334,30 @@ export default {
               item.attr_vals =
                 item.attr_vals.trim().length === 0
                   ? []
-                  : item.attr_vals.trim().split(",");
+                  : item.attr_vals.trim().split(',')
               // console.log(item.attr_vals);
-            });
+            })
           }
         }
       }
     },
     // 获取三级商品分类数据
-    async getGoodsCate() {
+    async getGoodsCate () {
       // get请求传参数通过查询字符串?传递，type传3表示显示三级分类
-      const res = await this.$http.get(`categories?type=3`);
+      const res = await this.$http.get(`categories?type=3`)
       // console.log(res);
       const {
         data,
-        meta: { msg, status }
-      } = res.data;
+        meta: { status }
+      } = res.data
       if (status === 200) {
-        this.options = data;
+        this.options = data
       }
     },
 
-    handleChange() {}
+    handleChange () {}
   }
-};
+}
 </script>
 
 <style scoped>

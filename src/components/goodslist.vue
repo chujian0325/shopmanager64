@@ -50,41 +50,41 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
-      searchValue: "",
+      searchValue: '',
       list: [],
       pagenum: 1,
       pagesize: 10,
       total: 0
-    };
+    }
   },
-  created() {
-    this.loadData();
+  created () {
+    this.loadData()
   },
   methods: {
-    handleSizeChange(val) {
+    handleSizeChange (val) {
       // console.log(`每页 ${val} 条`)
-      this.pagesize = val;
-      this.pagenum = 1;
-      this.loadData();
+      this.pagesize = val
+      this.pagenum = 1
+      this.loadData()
     },
-    handleCurrentChange(val) {
+    handleCurrentChange (val) {
       // console.log(`当前页: ${val}`)
-      this.pagenum = val;
-      this.loadData();
+      this.pagenum = val
+      this.loadData()
     },
-    handleSearch() {},
-    async loadData() {
+    handleSearch () {},
+    async loadData () {
       const { data: resData } = await this.$http.get(
         `goods?pagenum=${this.pagenum}&pagesize=${this.pagesize}`
-      );
-      this.total = resData.data.total;
-      this.list = resData.data.goods;
+      )
+      this.total = resData.data.total
+      this.list = resData.data.goods
       // console.log(this.list)
     }
   }
-};
+}
 </script>
 
 <style scoped>

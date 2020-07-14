@@ -23,32 +23,32 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       list: []
-    };
+    }
   },
   // 获取首屏数据在created中写
-  created() {
-    this.getTableData();
+  created () {
+    this.getTableData()
   },
   methods: {
     // 获取权限列表数据
-    async getTableData() {
-      const res = await this.$http.get(`rights/list`);
+    async getTableData () {
+      const res = await this.$http.get(`rights/list`)
       //   console.log("请求发起了--");
       // console.log(res);
       const {
         data,
-        meta: { msg, status }
-      } = res.data;
+        meta: { status }
+      } = res.data
       if (status === 200) {
         //   拿到数据，把数据给表格就能赋值了，在data中提供一个接收者list
-        this.list = data;
+        this.list = data
       }
     }
   }
-};
+}
 </script>
 
 <style scoped>

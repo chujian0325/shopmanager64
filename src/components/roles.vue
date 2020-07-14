@@ -7,7 +7,7 @@
       <el-table-column type="expand" width="80">
         <template slot-scope="scope">
           <!-- 行列布局 -->
-          <!-- 一级权限的位置用v-for遍历，一级权限遍历得到的是5行，所以写在el-row位置 
+          <!-- 一级权限的位置用v-for遍历，一级权限遍历得到的是5行，所以写在el-row位置
             scope.row取出的是数组里的对象
           -->
           <el-row class="level1" v-for="(item1) in scope.row.children" :key="item1.id">
@@ -81,7 +81,7 @@
     </el-table>
     <!-- 对话框 分配角色-->
     <el-dialog title="分配权限" :visible.sync="dialogFormVisible">
-      <!-- 
+      <!--
         data  数据来源
         show-checkbox  节点是否可被选择
         node-key 每个节点唯一标识，通常是data数据中的id名
@@ -89,7 +89,7 @@
         default-checked-keys 默认选中 数组类型，数组中是id
         props 配置选项{label、children} 来源于data绑定的数据源
       -->
-      <!-- 
+      <!--
         :default-expanded-keys="[2, 3]"  数组不能写死，定义一个arrExpand在data中声明
         组件效果，默认全展开，设置属性default-expand-all，可以不用写for遍历
       -->
@@ -125,7 +125,7 @@
     <!-- 对话框-编辑角色 -->
     <el-dialog title="编辑角色" :visible.sync="dialogFormVisibleEdit">
       <el-form label-position="left" label-width="80px" :model="formdata">
-        <el-form-item label="角色名称	">
+        <el-form-item label="角色名称">
           <el-input disabled v-model="formdata.roleName"></el-input>
         </el-form-item>
         <el-form-item label="角色描述">
@@ -142,7 +142,7 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       roles: [],
       dialogFormVisible: false,
@@ -153,25 +153,25 @@ export default {
       // arrExpand: [],
       arrCheck: [],
       defaultProps: {
-        children: "children",
-        label: "authName"
+        children: 'children',
+        label: 'authName'
       },
       // 当前角色id
       currRoleId: -1,
       // 添加角色数据
       formdata: {
-        roleName: "",
-        roleDesc: "",
+        roleName: '',
+        roleDesc: '',
         roleId: -1
       }
-    };
+    }
   },
-  created() {
-    this.getRoles();
+  created () {
+    this.getRoles()
   },
   methods: {
     // 当表格展开或关闭某一行时触发
-    fn(row, expandedRows) {
+    fn (row, expandedRows) {
       // console.log(row);
       // console.log(expandedRows);
       // 分析可得：row是当前点击的角色，类型是对象
@@ -180,89 +180,88 @@ export default {
       // 第一次点击，长度=1，不会进到判断，第二次点击时，判断>1，删除第一个元素
       if (expandedRows.length > 1) {
         // 当展开第二个时，删除第一个元素
-        expandedRows.shift();
+        expandedRows.shift()
       }
     },
     // 编辑角色--发送请求
-    async editRole() {
+    async editRole () {
       // 展示对话框得到的this.formdata中的角色id属性名是roleId
       const res = await this.$http.put(
         `roles/${this.formdata.roleId}`,
         this.formdata
-      );
+      )
       // console.log(res);
       const {
-        meta: { msg, status }
-      } = res.data;
+        meta: { status }
+      } = res.data
       if (status === 200) {
         // 关闭对话框，
-        this.dialogFormVisibleEdit = false;
+        this.dialogFormVisibleEdit = false
         // 重新加载表格
-        this.getRoles();
+        this.getRoles()
       }
     },
     // 编辑角色--显示对话框
-    async showDiaEditRole(role) {
+    async showDiaEditRole (role) {
       // console.log(role);
 
       // 获取当前角色
       // this.formdata = role;
       // console.log(this.formdata);
       // 根据id查询角色
-      const res = await this.$http.get(`roles/${role.id}`);
+      const res = await this.$http.get(`roles/${role.id}`)
       // console.log(res);
-      this.formdata = res.data.data;
+      this.formdata = res.data.data
 
       // console.log(this.formdata);
 
-      this.dialogFormVisibleEdit = true;
+      this.dialogFormVisibleEdit = true
     },
     // 添加角色--发送请求
-    async addRole() {
-      const res = await this.$http.post(`roles`, this.formdata);
+    async addRole () {
+      const res = await this.$http.post(`roles`, this.formdata)
       // console.log(res);
       const {
-        data,
         meta: { msg, status }
-      } = res.data;
+      } = res.data
       if (status === 201) {
         // 消息提示
-        this.$message.success(msg);
+        this.$message.success(msg)
         // 关闭对话框
-        this.dialogFormVisibleAdd = false;
+        this.dialogFormVisibleAdd = false
         // 更新表格
-        this.getRoles();
+        this.getRoles()
       }
     },
     // 添加角色--显示对话框
-    showDiaAddRole() {
+    showDiaAddRole () {
       // 一打开对话框，就清空表单
-      this.formdata = {};
-      this.dialogFormVisibleAdd = true;
+      this.formdata = {}
+      this.dialogFormVisibleAdd = true
     },
     // 删除角色--显示删除确认框
-    showDiaDeleRole(role) {
-      this.$confirm("确定删除吗?", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消"
+    showDiaDeleRole (role) {
+      this.$confirm('确定删除吗?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消'
       })
         .then(async () => {
-          const res = await this.$http.delete(`roles/${role.id}`);
+          const res = await this.$http.delete(`roles/${role.id}`)
           // console.log(res);
           const {
             meta: { msg, status }
-          } = res.data;
+          } = res.data
           if (status === 200) {
-            this.$message.success(msg);
-            this.getRoles();
+            this.$message.success(msg)
+            this.getRoles()
           }
         })
         .catch(() => {
-          this.$message.warning("取消删除!");
-        });
+          this.$message.warning('取消删除!')
+        })
     },
     // 分配权限-发送请求
-    async setRights() {
+    async setRights () {
       // 看el-tree组件中是否提供属性或方法来获取两类节点
       // 获取全选节点的id->getCheckedKeys->方法作用/方法形参/方法返回值(返回一个数组)->调用者->el-tree调用方法
       // 把el标签变成DOM元素->DOM元素.js方法->在js中操作DOM元素->ref操作DOM
@@ -270,10 +269,10 @@ export default {
       // 2. 在js中通过this.$refs.ref值.js方法
       // console.log(this.$refs);//DOM元素
 
-      const arr1 = this.$refs.treeDom.getCheckedKeys();
+      const arr1 = this.$refs.treeDom.getCheckedKeys()
       // console.log(arr1);
       // 获取半选节点的id
-      const arr2 = this.$refs.treeDom.getHalfCheckedKeys();
+      const arr2 = this.$refs.treeDom.getHalfCheckedKeys()
       // console.log(arr2);
       // :roleId是 角色id
       // 在data中声明一个当前角色id :currRoleId，在打开对话框的时候，已经获取了当前的角色，可以给currRoleId赋值this.currRoleId = role.id;
@@ -281,29 +280,28 @@ export default {
       // 把两个数组变成一个数组
       // const arr = concat(arr1, arr2);
       // 或者 ES6 展开操作运算符 ...是固定写法，后面是容器的名字。容器可以是数组或对象，所用：会把后面的数组中的元素一个一个展开，放在定义的arr中
-      const arr = [...arr1, ...arr2];
+      const arr = [...arr1, ...arr2]
       // console.log(arr);
       // 根据接口文档，需要的是数组以逗号分隔
 
       const res = await this.$http.post(`roles/${this.currRoleId}/rights`, {
         rids: arr.join()
-      });
+      })
       // console.log(res);
       const {
-        data,
         meta: { msg, status }
-      } = res.data;
+      } = res.data
       if (status === 200) {
         // 关闭对话框
-        this.dialogFormVisible = false;
+        this.dialogFormVisible = false
         // 提示
-        this.$message.success(msg);
+        this.$message.success(msg)
         // 刷新列表
-        this.getRoles();
+        this.getRoles()
       }
     },
     //  角色列表--删除权限
-    async deleteRights(role, rights) {
+    async deleteRights (role, rights) {
       // 发送请求
       // roleId ->角色id
       // rightId ->权限id
@@ -312,35 +310,35 @@ export default {
 
       const res = await this.$http.delete(
         `roles/${role.id}/rights/${rights.id}`
-      );
+      )
       // console.log(res);
       const {
         data,
         meta: { msg, status }
-      } = res.data;
+      } = res.data
       if (status === 200) {
         // 提示成功
-        this.$message.success(msg);
+        this.$message.success(msg)
         // 更新表格
         // this.getRoles()
         // 会返回当前角色的剩余权限
         // 只更新当前的角色权限，方法中有当前角色，
-        role.children = data;
+        role.children = data
       }
     },
     // 分配权限---打开对话框
-    async showDiaSetRights(role) {
-      this.currRoleId = role.id;
-      this.dialogFormVisible = true;
+    async showDiaSetRights (role) {
+      this.currRoleId = role.id
+      this.dialogFormVisible = true
       // 发送请求，获取树形结构的数据
-      const res = await this.$http.get(`rights/tree`);
+      const res = await this.$http.get(`rights/tree`)
       // console.log(res);
       const {
         data,
-        meta: { msg, status }
-      } = res.data;
+        meta: { status }
+      } = res.data
       if (status === 200) {
-        this.treelist = data;
+        this.treelist = data
         // console.log(data);
         // console.log(this.treelist);
         // 声明临时数组，保存id
@@ -361,35 +359,35 @@ export default {
         // this.arrExpand = temp;
         // 获取当前角色所拥有的权限id <-拿到当前角色
         // console.log(role);
-        const temp2 = [];
+        const temp2 = []
         role.children.forEach(item1 => {
           // temp2.push(item1.id);
           item1.children.forEach(item2 => {
             // temp2.push(item2.id);
             item2.children.forEach(item3 => {
-              temp2.push(item3.id);
-            });
-          });
-        });
+              temp2.push(item3.id)
+            })
+          })
+        })
         // console.log(temp2);
-        this.arrCheck = temp2;
+        this.arrCheck = temp2
       }
     },
     // 获取角色列表
-    async getRoles() {
-      const res = await this.$http.get(`roles`);
+    async getRoles () {
+      const res = await this.$http.get(`roles`)
       //   console.log(res);
       const {
         data,
-        meta: { msg, status }
-      } = res.data;
+        meta: { status }
+      } = res.data
       if (status === 200) {
-        this.roles = data;
+        this.roles = data
         // console.log(this.roles);
       }
     }
   }
-};
+}
 </script>
 
 <style scoped>

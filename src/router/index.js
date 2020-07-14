@@ -1,5 +1,9 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
+
+import {
+  Message
+} from 'element-ui'
 // import Login from '../components/login.vue'
 // webpack提供了新功能，@符号表示src目录，所以导入组件的时候可以写@，会自动锁定为src目录
 
@@ -15,10 +19,6 @@ const Cateparams = () => import('@/components/cateparams.vue')
 const Goodscate = () => import('@/components/goodscate.vue')
 const Order = () => import('@/components/order.vue')
 const Reports = () => import('@/components/reports.vue')
-
-import {
-  Message
-} from 'element-ui'
 Vue.use(VueRouter)
 
 const router = new VueRouter({

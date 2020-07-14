@@ -30,7 +30,7 @@
           -->
           <el-table-column type="expand" width="100">
             <template slot-scope="scope">
-              <!-- 动态tag编辑 
+              <!-- 动态tag编辑
               scope.row 是动态数组中的每个对象
               -->
               <el-tag
@@ -84,17 +84,17 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
-      active: "1",
+      active: '1',
       form: {},
       // 级联选择器使用的数据
       options: [],
       selectedOptions: [],
       defaultPro: {
-        label: "cat_name",
-        value: "cat_id",
-        children: "children"
+        label: 'cat_name',
+        value: 'cat_id',
+        children: 'children'
       },
       // 动态参数数据
       arrDy: [],
@@ -102,28 +102,28 @@ export default {
       arrStatic: [],
       // 动态tag数据
       inputVisible: false,
-      inputValue: ""
-    };
+      inputValue: ''
+    }
   },
-  created() {
-    this.getGoodsCate();
+  created () {
+    this.getGoodsCate()
   },
   methods: {
-    fn(row, expandedRows) {
+    fn (row, expandedRows) {
       if (expandedRows.length > 1) {
         // 当展开第二个时，删除第一个元素
-        expandedRows.shift();
+        expandedRows.shift()
       }
     },
     // 动态tag编辑相关方法
     // 删除
-    async handleClose(obj, item) {
+    async handleClose (obj, item) {
       // obj是scope.row，即动态数组中的每个对象，对象点数组attr_vals是要遍历的tag数组
-      obj.attr_vals.splice(obj.attr_vals.indexOf(item), 1);
+      obj.attr_vals.splice(obj.attr_vals.indexOf(item), 1)
       // 删除发送请求
-      // :id	分类 ID	这里是三级分类id，是selectedOptions数组中下标为2的元素
-      // :attrId	属性 ID->attr_id
-      //状态码400--> msg: "参数 attr_sel 类型必须为 only 或 many"
+      // :id 分类 ID 这里是三级分类id，是selectedOptions数组中下标为2的元素
+      // :attrId 属性 ID->attr_id
+      // 状态码400--> msg: "参数 attr_sel 类型必须为 only 或 many"
       // put请求修改数据要做两件事：1. 找到要修改的数据（分类id+属性id）2. 告诉他新数据是谁
       // put请求需要请求体
       // {
@@ -131,140 +131,140 @@ export default {
       //   attr_sel:'',
       //   attr_vals:''
       // }
-      // attr_name	属性名	分类名，数据中每个对象的attr_name
-      // attr_sel	many或only
-      // attr_vals	属性值
+      // attr_name 属性名 分类名，数据中每个对象的attr_name
+      // attr_sel many或only
+      // attr_vals 属性值
       const res = await this.$http.put(
         `categories/${this.selectedOptions[2]}/attributes/${obj.attr_id}`,
         {
           attr_name: obj.attr_name,
           attr_sel: obj.attr_sel,
-          attr_vals: obj.attr_vals.join(",")
+          attr_vals: obj.attr_vals.join(',')
         }
-      );
+      )
       // console.log(res);
-      //数据库错误-> sql: "UPDATE `sp_attribute` SET `cat_id` = '6', `attr_vals` = ('aa', 'bb', 'cc') WHERE `attr_id` = 3077"
+      // 数据库错误-> sql: "UPDATE `sp_attribute` SET `cat_id` = '6', `attr_vals` = ('aa', 'bb', 'cc') WHERE `attr_id` = 3077"
       // 数据库操作里面都是字符串，不能写数组，而我们的obj.attr_vals是数组，给它转成以逗号分隔的字符串
       const {
         meta: { msg, status }
-      } = res.data;
+      } = res.data
       if (status === 200) {
-        this.$message.success(msg);
+        this.$message.success(msg)
       }
     },
 
-    showInput() {
-      this.inputVisible = true;
+    showInput () {
+      this.inputVisible = true
       this.$nextTick(_ => {
-        this.$refs.saveTagInput.$refs.input.focus();
-      });
+        this.$refs.saveTagInput.$refs.input.focus()
+      })
     },
     // 添加
-    async handleInputConfirm(obj) {
-      let inputValue = this.inputValue;
+    async handleInputConfirm (obj) {
+      let inputValue = this.inputValue
       if (inputValue) {
-        obj.attr_vals.push(inputValue);
+        obj.attr_vals.push(inputValue)
         // 按照新数组发送添加的请求
         const res = await this.$http.put(
           `categories/${this.selectedOptions[2]}/attributes/${obj.attr_id}`,
           {
             attr_name: obj.attr_name,
             attr_sel: obj.attr_sel,
-            attr_vals: obj.attr_vals.join(",")
+            attr_vals: obj.attr_vals.join(',')
           }
-        );
+        )
         // console.log(res);
         const {
           meta: { msg, status }
-        } = res.data;
+        } = res.data
         if (status === 200) {
-          this.$message.success(msg);
+          this.$message.success(msg)
         }
       }
-      this.inputVisible = false;
-      this.inputValue = "";
+      this.inputVisible = false
+      this.inputValue = ''
     },
-    changeTab() {
+    changeTab () {
       // tab改变时也要拿数据
-      this.getDyOrStatic();
+      this.getDyOrStatic()
     },
     // 级联的label改变时触发该事件
-    async handleChange() {
-      this.getDyOrStatic();
+    async handleChange () {
+      this.getDyOrStatic()
     },
     // 获取动态获取静态数据
-    async getDyOrStatic() {
+    async getDyOrStatic () {
       // 如果级联的数组的长度是不是3
       if (this.selectedOptions.length !== 3) {
         // 提示
-        this.$message.warning("请先选择三级分类！");
-        if (this.active === "1") {
-          this.arrDy = [];
+        this.$message.warning('请先选择三级分类！')
+        if (this.active === '1') {
+          this.arrDy = []
         }
-        if (this.active == "2") {
-          this.arrStatic = [];
+        if (this.active === '2') {
+          this.arrStatic = []
         }
 
-        return;
+        return
       }
       // 获取动态参数数据
-      if (this.active === "1") {
+      if (this.active === '1') {
         // :id是分类id，这里是selectedOptions中的6
         const res = await this.$http.get(
           `categories/${this.selectedOptions[2]}/attributes?sel=many`
-        );
+        )
         // console.log(res);
         const {
           data,
-          meta: { msg, status }
-        } = res.data;
+          meta: { status }
+        } = res.data
         if (status === 200) {
-          this.arrDy = data;
-          console.log("动态参数");
+          this.arrDy = data
+          console.log('动态参数')
 
-          console.log(this.arrDy);
+          console.log(this.arrDy)
           this.arrDy.forEach(item => {
             item.attr_vals =
               item.attr_vals.trim().length === 0
                 ? []
-                : item.attr_vals.trim().split(",");
+                : item.attr_vals.trim().split(',')
             // console.log(item.attr_vals);
-          });
+          })
         }
       }
       // 获取静态参数数据
-      if (this.active === "2") {
+      if (this.active === '2') {
         const res = await this.$http.get(
           `categories/${this.selectedOptions[2]}/attributes?sel=only`
-        );
+        )
         // console.log(res);
         const {
           data,
-          meta: { msg, status }
-        } = res.data;
+          meta: { status }
+        } = res.data
         if (status === 200) {
-          this.arrStatic = data;
-          console.log("静态参数");
+          this.arrStatic = data
+          console.log('静态参数')
 
-          console.log(this.arrStatic);
+          console.log(this.arrStatic)
         }
       }
     },
     // 获取三级商品分类数据
-    async getGoodsCate() {
+    async getGoodsCate () {
       // get请求传参数通过查询字符串?传递，type传3表示显示三级分类
-      const res = await this.$http.get(`categories?type=3`);
+      const res = await this.$http.get(`categories?type=3`)
       // console.log(res);
       const {
         data,
-        meta: { msg, status }
-      } = res.data;
+        meta: { status }
+      } = res.data
       if (status === 200) {
-        this.options = data;
+        this.options = data
       }
     }
   }
-};
+}
 </script>
 
 <style scoped>

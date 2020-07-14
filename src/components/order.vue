@@ -55,39 +55,39 @@
 <script>
 import CityArr from '@/assets/city_data2017_element.js'
 export default {
-  data() {
+  data () {
     return {
       list: [],
       dialogFormVisible: false,
       form: {
-        address: ""
+        address: ''
       },
       // 级联选择器要绑定的数据
 
       catlist: [],
       selectedOptions: [],
-      defaultProp:{
-        value:'value',
-        label:'label',
-        children:'children'
+      defaultProp: {
+        value: 'value',
+        label: 'label',
+        children: 'children'
       }
-    };
+    }
   },
-  created() {
-    this.getData();
+  created () {
+    this.getData()
   },
   methods: {
-    async getData() {
-      const res = await this.$http.get(`orders?pagenum=1&pagesize=10`);
+    async getData () {
+      const res = await this.$http.get(`orders?pagenum=1&pagesize=10`)
       // console.log(res);
-      this.list = res.data.data.goods;
+      this.list = res.data.data.goods
     },
-    showEditdia() {
-      this.catlist = CityArr;
-      this.dialogFormVisible = true;
+    showEditdia () {
+      this.catlist = CityArr
+      this.dialogFormVisible = true
     }
   }
-};
+}
 </script>
 
 <style>

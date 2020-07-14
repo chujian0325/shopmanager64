@@ -179,7 +179,7 @@
       <el-form :model="formdata">
         <el-form-item label="用户名">{{formdata.username}}</el-form-item>
         <el-form-item label="角色">
-          <!-- 
+          <!--
             下拉框的特性
             v-model 绑定表单元素
             1. type="text"  一般的input
@@ -187,9 +187,8 @@
             下拉框的特点：
             1. 默认显示请选择->当v-model的数据selectVal与option中 的value值，相等
             2. 当选择某个option时，v-model数据的值等于选中的label的value的值
-            3. 
+            3.
 
-          
           -->
           {{selectVal}}
           <el-select v-model="selectVal" placeholder="请选择角色名">
@@ -202,7 +201,7 @@
 
             -->
             <el-option
-              v-for="(item,i) in roles"
+              v-for="(item) in roles"
               :key="item.id"
               :label="item.roleName"
               :value="item.id"
@@ -222,7 +221,7 @@
 export default {
   data () {
     return {
-      loading:true,
+      loading: true,
       query: '',
       pagenum: 1,
       pagesize: 2,
@@ -236,22 +235,22 @@ export default {
       dialogFormVisibleRole: false,
 
       // 表单数据，将来要发post请求，需要请求体，请求体的数据根据接口文档写
-      // username	用户名称	不能为空
-      // password	用户密码	不能为空
-      // email	邮箱	可以为空
-      // mobile	手机号	可以为空
+      // username 用户名称 不能为空
+      // password 用户密码 不能为空
+      // email 邮箱 可以为空
+      // mobile 手机号 可以为空
       formdata: {
-        username: "",
-        password: "",
-        email: "",
-        mobile: ""
+        username: '',
+        password: '',
+        email: '',
+        mobile: ''
       },
       // 下拉框中的数据
       selectVal: -1,
       currUserId: -1,
       // 角色数组
       roles: []
-    };
+    }
   },
   //   所有的获取首屏数据的方法调用在created中
   created () {
@@ -259,51 +258,50 @@ export default {
   },
   methods: {
     // 分配角色--发送请求，分配用户角色
-    async setRole() {
+    async setRole () {
       // :id是用户id，data中没有数据，也不能传递参数，在对话框里面，没有template，不能传实参，可以在data中提供一个id
       // currUserId -> -1
       // 显示对话框的时候，有用户，可以在 showDiaSetRole()方法中给currUserId赋值
       const res = await this.$http.put(`users/${this.currUserId}/role`, {
         rid: this.selectVal
-      });
+      })
       // console.log(res);
       const {
-        meta: { msg, status }
-      } = res.data;
+        meta: { status }
+      } = res.data
       if (status === 200) {
         // 关闭对话框
-        this.dialogFormVisibleRole = false;
-        this.getTableData();
+        this.dialogFormVisibleRole = false
+        this.getTableData()
       }
     },
     // 分配角色--打开对话框
-    async showDiaSetRole(user) {
+    async showDiaSetRole (user) {
       // console.log(user);
 
       // 显示用户名
-      this.formdata.username = user.username;
-      this.currUserId = user.id;
-      this.dialogFormVisibleRole = true;
+      this.formdata.username = user.username
+      this.currUserId = user.id
+      this.dialogFormVisibleRole = true
       // 获取角色名称
-      const res = await this.$http.get(`roles`);
+      const res = await this.$http.get(`roles`)
       // console.log(res);
       const {
-        data,
-        meta: { msg, status }
-      } = res.data;
+        data
+      } = res.data
       // 拿到数组，在data中声明roles，用v-for遍历
-      this.roles = data;
+      this.roles = data
       // 给下拉框v-model绑定的数据值selectVal赋值
       // this.selectVal=当前用户的角色id，看返回的user中是否有角色id
       // 打印user ，发现没有
       // 查看文档 根据 ID 查询用户信息，可以看到有角色id
-      const res2 = await this.$http.get(`users/${user.id}`);
+      const res2 = await this.$http.get(`users/${user.id}`)
       // console.log(res2); //返回的数据中有角色id ->rid
 
-      this.selectVal = res2.data.data.rid;
+      this.selectVal = res2.data.data.rid
     },
     // 修改状态
-    async changeState(user) {
+    async changeState (user) {
       // 改状态，就要改数据，改数据就要发请求。
       // 接口文档中写了参数写在url中，所以不用写请求体
       // 根据接口文档可知：
@@ -315,11 +313,11 @@ export default {
 
       const res = await this.$http.put(
         `users/${user.id}/state/${user.mg_state}`
-      );
-      console.log(res);
+      )
+      console.log(res)
     },
     // 编辑--发送请求
-    async editUser() {
+    async editUser () {
       // 发送编辑请求
       // id ->user.id
       // 1. data 中没有user
@@ -329,20 +327,20 @@ export default {
       const res = await this.$http.put(
         `users/${this.formdata.id}`,
         this.formdata
-      );
-      console.log(res);
+      )
+      console.log(res)
       const {
-        meta: { msg, status }
-      } = res.data;
+        meta: { status }
+      } = res.data
       if (status === 200) {
         // 关闭对话框
-        this.dialogFormVisibleEdit = false;
+        this.dialogFormVisibleEdit = false
         // 重新加载表格
-        this.getTableData();
+        this.getTableData()
       }
     },
     // 编辑--显示对话框
-    async showDiaEditUser(user) {
+    async showDiaEditUser (user) {
       // 获取当前用户的数据
       // this.formdata = user;
       // 上行代码，两个指针指向了同一个内存空间，当操作formdata的数据时，user的数据也会改变
@@ -352,71 +350,70 @@ export default {
       // this.formdata.mobile = user.mobile;
       // 或者
       // 该请求是传一个用户id，返回用户信息
-      const res = await this.$http.get(`users/${user.id}`);
-      console.log(res);
+      const res = await this.$http.get(`users/${user.id}`)
+      console.log(res)
       // 返回的结果中有我们需要的用户信息（邮箱、电话、用户名）
       // 上面的赋值是用的已经存在的用户数据，下面的赋值和当前用户无关，是请求的数据
-      this.formdata = res.data.data;
+      this.formdata = res.data.data
 
-      this.dialogFormVisibleEdit = true;
+      this.dialogFormVisibleEdit = true
     },
     // 删除--显示确认框
-    showMsgBoxDele(user) {
-      console.log(user);
+    showMsgBoxDele (user) {
+      console.log(user)
 
-      this.$confirm("确定删除吗？", "提示", {
-        confirmButtonText: "确定",
-        cancelButtonText: "取消",
-        type: "warning"
+      this.$confirm('确定删除吗？', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
       })
         .then(async () => {
           // id是用户id ，想拿id,要先拿到用户，在方法中拿数据，数据的来源：
           // 1. data中提供，看看有没有
           // 2. 方法中传递参数，看看方法调用的时候能不能传 递参数
-          const res = await this.$http.delete(`users/${user.id}`);
+          const res = await this.$http.delete(`users/${user.id}`)
           // console.log(res);
           const {
             meta: { msg, status }
-          } = res.data;
+          } = res.data
           if (status === 200) {
             // 把页码重置为第一页
-            this.pagenum = 1;
-            this.$message.success(msg);
+            this.pagenum = 1
+            this.$message.success(msg)
             // 重新加载表格
-            this.getTableData();
+            this.getTableData()
           }
         })
         .catch(() => {
-          this.$message.warning("取消删除!");
-        });
+          this.$message.warning('取消删除!')
+        })
     },
     // 添加用户--发送请求
-    async addUser() {
-      const res = await this.$http.post("users", this.formdata);
-      console.log(res);
+    async addUser () {
+      const res = await this.$http.post('users', this.formdata)
+      console.log(res)
       const {
-        data,
-        meta: { msg, status }
-      } = res.data;
+        meta: { status }
+      } = res.data
       if (status === 201) {
         // 关闭对话框
-        this.dialogFormVisibleAdd = false;
+        this.dialogFormVisibleAdd = false
         // 重新加载表格
-        this.getTableData();
+        this.getTableData()
         // 清空表单，在显示对话框的时候清空
       }
     },
     // 添加用户-显示对话框
-    showDiaAddUsers() {
+    showDiaAddUsers () {
       // 清空表单
       // this.formdata.username = "";
       // this.formdata.password = "";
       // this.formdata.email = "";
       // this.formdata.mobile = "";
       // 或者  formdata设置成一个空对象，但是绑定表单的时候，可以通过点的方式给对象添加成员
-      this.formdata = {};
+      this.formdata = {}
       // 显示对话框
-      this.dialogFormVisibleAdd = true;
+      this.dialogFormVisibleAdd = true
     },
     // 清空时获取所有用户
     getAllUsers () {
@@ -465,10 +462,10 @@ export default {
       // console.log(res);
       const {
         data,
-        meta: { msg, status }
+        meta: { status }
       } = res.data
       if (status === 200) {
-        this.loading = false;
+        this.loading = false
         // res中有total总条数
         this.total = data.total
 

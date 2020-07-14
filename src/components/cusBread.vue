@@ -28,9 +28,9 @@ export default {
   // 6. props中的数据将来就是组件的属性,也就是自定义标签的属性
   // 7. props中的数据将来使用组件时，通过属性进行赋值<abc level1="权限管理"></abc>
   // 组件的名字应该由组件自己提供，而不是由使用者提供
-  name: "CusBread",
-  props: ["level1", "level2"]
-};
+  name: 'CusBread',
+  props: ['level1', 'level2']
+}
 </script>
 
 <style>

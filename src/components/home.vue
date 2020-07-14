@@ -44,10 +44,10 @@
 
 <script>
 export default {
-  data() {
+  data () {
     return {
       menus: []
-    };
+    }
   },
   // 如果用户没登录，if(!token)->改标识->this.$router.push()显示login.vue组件,
   // 代码位置：beforeMount，组件渲染完成之前
@@ -61,7 +61,7 @@ export default {
   //   }
   // },
   // 写在beforeCreate也可以，一般写在beforeCreate，页面加载之前
-  beforeCreate() {
+  beforeCreate () {
     // 判断token有没有这件事不想放在home主页中，想放在另外的位置，当标识发生变化时，代码的位置不是先来到组件，代码是先来到路由的位置index.js，看路由中有没有/，如果有/，才去执行home.vue（如果 路由匹配成功，才去渲染组件）所以在路由位置加一个筛选
     // if (!localStorage.getItem("token")) {
     //   this.$router.push({
@@ -70,46 +70,46 @@ export default {
     //   this.$message.warning("请先登录！");
     // }
   },
-  mounted() {},
-  created() {
-    this.getMenus();
+  mounted () {},
+  created () {
+    this.getMenus()
   },
   methods: {
     // 导航激活事件
-    fn(index, indexPath) {
+    fn (index, indexPath) {
       // console.log(index); // 标识goods
       // console.log(indexPath);//数组，第一个是控制的是第几个导航，第二个时标识即index  [1,goods]
       // fn触发时，要获取当前点击的路由数据
-      console.log(this.$route.name);
+      console.log(this.$route.name)
       // this.$route路由配置对象，里面有当期的标识
       // this.$route.name就是当前点击的路由标识，绑定给el-menu
       //  default-active="$route.name"
     },
     // 动态导航
-    async getMenus() {
-      const res = await this.$http.get(`menus`);
+    async getMenus () {
+      const res = await this.$http.get(`menus`)
       // console.log(res);
       const {
         data,
-        meta: { msg, status }
-      } = res.data;
+        meta: { status }
+      } = res.data
       if (status === 200) {
-        this.menus = data;
+        this.menus = data
       }
     },
     // 退出功能
-    handleLoginout() {
+    handleLoginout () {
       // 1. 清除token
-      localStorage.clear();
+      localStorage.clear()
       // 2. 来到登录组件
       this.$router.push({
-        name: "login"
-      });
+        name: 'login'
+      })
       // 3. 提示
-      this.$message.warning("退出成功");
+      this.$message.warning('退出成功')
     }
   }
-};
+}
 </script>
 
 <style scoped>
